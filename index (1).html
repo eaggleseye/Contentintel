@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Social Intelligence Dashboard</title>
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSutQCJyiHvKU_2gSxJlvPgHHwAkHDWlY",
+    authDomain: "socialintel-f7c23.firebaseapp.com",
+    projectId: "socialintel-f7c23",
+    storageBucket: "socialintel-f7c23.firebasestorage.app",
+    messagingSenderId: "41139325860",
+    appId: "1:41139325860:web:23f9c6ce36c542997b4f31"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // Expose to global scope
+  window._auth = auth;
+  window._db = db;
+  window._provider = provider;
+  window._signInWithPopup = signInWithPopup;
+  window._signOut = signOut;
+  window._onAuthStateChanged = onAuthStateChanged;
+  window._doc = doc;
+  window._getDoc = getDoc;
+  window._setDoc = setDoc;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // Get or create user doc
+      const userRef = doc(db, 'users', user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        await setDoc(userRef, { email: user.email, tier: 'free', scansToday: 0, lastScanDate: '', createdAt: new Date().toISOString() });
+      }
+      const data = snap.exists() ? snap.data() : { tier: 'free', scansToday: 0, lastScanDate: '' };
+      window._currentUser = user;
+      window._userTier = data.tier || 'free';
+      window._scansToday = data.scansToday || 0;
+      window._lastScanDate = data.lastScanDate || '';
+      if (window.onUserReady) window.onUserReady(user, data.tier || 'free');
+    } else {
+      window._currentUser = null;
+      window._userTier = null;
+      if (window.onUserSignedOut) window.onUserSignedOut();
+    }
+  });
+</script>
+<!-- Paystack -->
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0d12;
+    --bg2: #111520;
+    --bg3: #181d2a;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0;
+    --accent2: #7c5cfc;
+    --accent3: #ff6b6b;
+    --accent4: #ffb830;
+    --text: #e8eaf0;
+    --text2: #8b90a0;
+    --text3: #555a6a;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius: 12px;
+    --radius-sm: 7px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* LOCK SCREEN */
+  #lockScreen {
+    position: fixed; inset: 0; z-index: 1000;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+    animation: fadeIn 0.5s ease;
+  }
+  .lock-logo {
+    font-family: var(--font-head);
+    font-size: 28px; font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .lock-sub { color: var(--text2); font-size: 13px; text-align: center; max-width: 280px; }
+  .lock-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    width: 100%; max-width: 360px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .lock-box input {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: var(--font-body); font-size: 14px;
+    padding: 10px 14px; width: 100%;
+    outline: none; transition: border 0.2s;
+  }
+  .lock-box input:focus { border-color: var(--accent); }
+  .lock-btn {
+    background: linear-gradient(135deg, var(--accent), #00b37a);
+    border: none; border-radius: var(--radius-sm);
+    color: #000; font-family: var(--font-head);
+    font-size: 14px; font-weight: 700;
+    padding: 11px; cursor: pointer;
+    letter-spacing: 0.5px; transition: opacity 0.2s;
+  }
+  .lock-btn:hover { opacity: 0.85; }
+  .lock-err { color: var(--accent3); font-size: 12px; text-align: center; display: none; }
+  .lock-note { font-size: 11px; color: var(--text3); text-align: center; }
+  .lock-note a { color: var(--accent); text-decoration: none; }
+
+  /* MAIN APP */
+  #app { display: none; max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* HEADER */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 32px; flex-wrap: wrap; gap: 12px;
+  }
+  .logo {
+    font-family: var(--font-head); font-size: 22px; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; font-family: var(--font-body); }
+
+  /* SECTION CARDS */
+  .section {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: var(--font-head); font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    color: var(--text2); margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::before {
+    content: ''; width: 3px; height: 13px;
+    background: var(--accent); border-radius: 2px; display: block;
+  }
+
+  /* PLATFORM TOGGLES */
+  .platform-grid {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .plat-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text2);
+    font-family: var(--font-body); font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+    user-select: none;
+  }
+  .plat-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .plat-btn.on { border-color: var(--accent); color: var(--accent); background: rgba(0,229,160,0.07); }
+  .plat-btn.on-purple { border-color: var(--accent2); color: var(--accent2); background: rgba(124,92,252,0.08); }
+  .plat-btn.on-red { border-color: var(--accent3); color: var(--accent3); background: rgba(255,107,107,0.08); }
+  .plat-btn.on-blue { border-color: #1d9bf0; color: #1d9bf0; background: rgba(29,155,240,0.08); }
+
+  /* TOPIC SECTION */
+  .topic-presets { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .topic-chip {
+    padding: 5px 12px; border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text2);
+    font-size: 12px; cursor: pointer; transition: all 0.15s;
+    user-select: none;
+  }
+  .topic-chip.on {
+    background: rgba(124,92,252,0.15);
+    border-color: var(--accent2); color: var(--accent2);
+  }
+  .topic-input-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .topic-input {
+    flex: 1; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: var(--font-body); font-size: 13px;
+    padding: 9px 13px; outline: none; transition: border 0.2s;
+  }
+  .topic-input:focus { border-color: var(--accent2); }
+  .topic-input::placeholder { color: var(--text3); }
+  .add-topic-btn {
+    padding: 9px 16px; border-radius: var(--radius-sm);
+    border: 1px solid var(--accent2); background: transparent;
+    color: var(--accent2); font-family: var(--font-body);
+    font-size: 13px; cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .add-topic-btn:hover { background: rgba(124,92,252,0.1); }
+  .selected-topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .sel-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 99px;
+    background: rgba(124,92,252,0.2);
+    border: 1px solid var(--accent2);
+    color: var(--accent2); font-size: 12px;
+  }
+  .sel-chip button {
+    background: none; border: none; color: var(--accent2);
+    cursor: pointer; font-size: 14px; line-height: 1; padding: 0;
+    opacity: 0.7;
+  }
+  .sel-chip button:hover { opacity: 1; }
+
+  /* LOCATION */
+  .location-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .loc-input {
+    flex: 1; min-width: 180px;
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: var(--font-body); font-size: 13px;
+    padding: 9px 13px; outline: none; transition: border 0.2s;
+  }
+  .loc-input:focus { border-color: var(--accent4); }
+  .loc-input::placeholder { color: var(--text3); }
+  .loc-presets { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+  .loc-chip {
+    padding: 4px 10px; border-radius: 99px;
+    border: 1px solid var(--border); background: var(--bg3);
+    color: var(--text2); font-size: 11px; cursor: pointer;
+    transition: all 0.15s; user-select: none;
+  }
+  .loc-chip.on {
+    background: rgba(255,184,48,0.12);
+    border-color: var(--accent4); color: var(--accent4);
+  }
+
+  /* CONTROLS ROW */
+  .controls-row {
+    display: flex; gap: 10px; align-items: center;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .run-btn {
+    display: flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, var(--accent), #00b37a);
+    border: none; border-radius: var(--radius-sm);
+    color: #000; font-family: var(--font-head);
+    font-size: 14px; font-weight: 700;
+    padding: 11px 24px; cursor: pointer;
+    letter-spacing: 0.3px; transition: opacity 0.2s;
+  }
+  .run-btn:hover:not(:disabled) { opacity: 0.85; }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .ctrl-select {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text2);
+    font-family: var(--font-body); font-size: 13px;
+    padding: 10px 12px; cursor: pointer; outline: none;
+  }
+
+  /* PROGRESS */
+  .progress-wrap { display: none; margin-bottom: 20px; }
+  .progress-track {
+    height: 3px; background: var(--bg3);
+    border-radius: 2px; overflow: hidden; margin-bottom: 8px;
+  }
+  .progress-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px; transition: width 0.4s ease;
+  }
+  .status-line { font-size: 12px; color: var(--text2); min-height: 18px; }
+
+  /* ERROR */
+  .error-box {
+    background: rgba(255,107,107,0.08);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: var(--radius-sm); padding: 12px 16px;
+    font-size: 13px; color: #ff9999;
+    margin-bottom: 16px; display: none;
+  }
+
+  /* RESULTS */
+  .results { display: none; }
+
+  /* PLATFORM SOURCE BADGE */
+  .src-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    padding: 2px 7px; border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .src-reddit { background: rgba(255,69,0,0.15); color: #ff6314; }
+  .src-youtube { background: rgba(255,0,0,0.12); color: #ff4444; }
+  .src-tiktok { background: rgba(0,229,160,0.12); color: var(--accent); }
+  .src-x { background: rgba(255,255,255,0.07); color: #ccc; }
+  .src-instagram { background: rgba(193,53,132,0.15); color: #e1306c; }
+  .src-facebook { background: rgba(24,119,242,0.15); color: #1877f2; }
+
+  /* TABS */
+  .tabs-row {
+    display: flex; gap: 2px; border-bottom: 1px solid var(--border);
+    margin-bottom: 20px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs-row::-webkit-scrollbar { display: none; }
+  .tab {
+    padding: 10px 16px; font-size: 13px; font-weight: 500;
+    color: var(--text2); cursor: pointer; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s; margin-bottom: -1px;
+    font-family: var(--font-body);
+  }
+  .tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-pane { display: none; }
+  .tab-pane.on { display: block; }
+  .pane-intro { font-size: 13px; color: var(--text2); margin-bottom: 16px; line-height: 1.7; }
+
+  /* RESULT CARDS */
+  .rcard {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    margin-bottom: 10px; transition: border-color 0.2s;
+  }
+  .rcard:hover { border-color: rgba(255,255,255,0.12); }
+  .rcard .rmeta {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap; margin-bottom: 7px;
+  }
+  .rcard .rtitle {
+    font-family: var(--font-head); font-size: 15px; font-weight: 600;
+    color: var(--text); margin-bottom: 5px;
+  }
+  .rcard .rbody { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .heat-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+  .pill-sm {
+    font-size: 10px; padding: 2px 7px; border-radius: 4px;
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text3);
+  }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+
+  /* TICKER CARDS */
+  .ticker-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 18px;
+    margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .ticker-badge {
+    min-width: 62px; text-align: center;
+    border-radius: var(--radius-sm); padding: 8px 6px;
+    font-family: var(--font-head); font-size: 15px; font-weight: 700;
+  }
+  .sent-bull { background: rgba(0,229,160,0.12); color: var(--accent); }
+  .sent-bear { background: rgba(255,107,107,0.12); color: var(--accent3); }
+  .sent-mix { background: rgba(255,184,48,0.12); color: var(--accent4); }
+  .ticker-label { font-size: 10px; font-weight: 500; text-transform: uppercase; margin-top: 3px; }
+
+  /* HOW-TO ROWS */
+  .howto-row {
+    border-left: 2px solid var(--accent2);
+    background: rgba(124,92,252,0.06);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px; margin-bottom: 8px;
+  }
+  .howto-q { font-size: 14px; font-weight: 500; color: var(--text); }
+  .howto-ctx { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+  /* SIGNAL ROWS */
+  .signal-row {
+    border-left: 2px solid var(--accent4);
+    background: rgba(255,184,48,0.06);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px; margin-bottom: 8px;
+  }
+  .signal-q { font-size: 14px; font-weight: 500; color: var(--text); }
+  .signal-ctx { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+  /* FEAR ROWS */
+  .fear-row {
+    border-left: 2px solid var(--accent3);
+    background: rgba(255,107,107,0.06);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 10px 14px; margin-bottom: 8px;
+  }
+  .fear-q { font-size: 14px; font-weight: 500; color: var(--text); }
+  .fear-ctx { font-size: 12px; color: var(--text2); margin-top: 3px; }
+  .fear-angle { font-size: 12px; color: var(--accent3); margin-top: 4px; font-style: italic; opacity: 0.8; }
+
+  /* DEMAND GAPS */
+  .demand-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+    margin-bottom: 10px; transition: border-color 0.2s;
+  }
+  .demand-card:hover { border-color: rgba(255,255,255,0.12); }
+  .demand-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+  .demand-query { font-family: var(--font-head); font-size: 15px; font-weight: 600; color: var(--text); }
+  .demand-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+  }
+  .demand-high { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .demand-medium { background: rgba(255,184,48,0.15); color: var(--accent4); }
+  .demand-low { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .demand-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+  .demand-trend {
+    font-size: 11px; font-weight: 600; padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .trend-rising { background: rgba(0,229,160,0.12); color: var(--accent); }
+  .trend-stable { background: rgba(255,255,255,0.06); color: var(--text3); }
+  .trend-exploding { background: rgba(255,107,107,0.15); color: var(--accent3); }
+  .demand-body { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 8px; }
+  .demand-gap {
+    background: rgba(124,92,252,0.08); border: 1px solid rgba(124,92,252,0.2);
+    border-radius: var(--radius-sm); padding: 8px 12px;
+    font-size: 12px; color: var(--accent2); margin-top: 6px;
+  }
+  .demand-gap strong { color: var(--accent2); }
+
+  /* EXPORT */
+  .export-btn {
+    margin-top: 16px; padding: 9px 20px;
+    background: transparent; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text2);
+    font-family: var(--font-body); font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .export-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* LEVEL BADGE */
+  .level-badge {
+    font-size: 10px; font-weight: 600; padding: 2px 8px;
+    border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .level-beginner { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .level-intermediate { background: rgba(255,184,48,0.15); color: var(--accent4); }
+  .level-advanced { background: rgba(255,107,107,0.15); color: var(--accent3); }
+
+  /* GRID DIVIDER */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* FOOTER */
+  .footer { text-align: center; margin-top: 40px; color: var(--text3); font-size: 11px; }
+
+  /* GOOGLE BUTTON */
+  .google-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    background: #fff; border: 1px solid #ddd; border-radius: var(--radius-sm);
+    color: #333; font-family: var(--font-body); font-size: 14px; font-weight: 500;
+    padding: 11px 20px; cursor: pointer; transition: box-shadow 0.2s; width: 100%;
+  }
+  .google-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+  /* PRICING CARDS */
+  .price-card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    min-width: 180px; flex: 1;
+  }
+  .price-card-starter { border-color: rgba(0,229,160,0.3); }
+  .price-card-pro { border-color: rgba(124,92,252,0.4); background: rgba(124,92,252,0.05); }
+  .price-tier { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .price-amount { font-family: var(--font-head); font-size: 24px; font-weight: 800; color: var(--accent); margin-bottom: 12px; }
+  .price-amount span { font-size: 12px; color: var(--text3); font-weight: 400; }
+  .price-card-pro .price-amount { color: var(--accent2); }
+  .price-features { list-style: none; font-size: 12px; color: var(--text2); display: flex; flex-direction: column; gap: 5px; }
+  .price-features li { line-height: 1.4; }
+
+  /* TIER BADGE HEADER */
+  .tier-badge-header {
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .tier-free { background: rgba(255,255,255,0.06); color: var(--text3); }
+  .tier-starter { background: rgba(0,229,160,0.15); color: var(--accent); }
+  .tier-pro { background: rgba(124,92,252,0.2); color: var(--accent2); }
+
+  /* UPGRADE BUTTON */
+  .upgrade-header-btn {
+    background: linear-gradient(135deg, var(--accent2), #5a3fd4);
+    border: none; border-radius: var(--radius-sm);
+    color: #fff; font-family: var(--font-head);
+    font-size: 12px; font-weight: 700;
+    padding: 7px 14px; cursor: pointer; transition: opacity 0.2s;
+  }
+  .upgrade-header-btn:hover { opacity: 0.85; }
+
+  /* UPGRADE MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-box {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    max-width: 520px; width: 100%;
+  }
+  .modal-title { font-family: var(--font-head); font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+  .modal-plans { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+  .modal-plan {
+    flex: 1; min-width: 160px; border: 2px solid var(--border);
+    border-radius: var(--radius); padding: 16px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .modal-plan.selected { border-color: var(--accent2); background: rgba(124,92,252,0.08); }
+  .modal-plan-name { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .modal-plan-price { font-size: 20px; font-weight: 800; color: var(--accent2); margin-bottom: 8px; }
+  .modal-plan-features { font-size: 11px; color: var(--text2); line-height: 1.7; }
+  .pay-btn {
+    width: 100%; padding: 13px;
+    background: linear-gradient(135deg, var(--accent2), #5a3fd4);
+    border: none; border-radius: var(--radius-sm);
+    color: #fff; font-family: var(--font-head);
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.2s; margin-bottom: 10px;
+  }
+  .pay-btn:hover { opacity: 0.85; }
+  .modal-close { background: none; border: none; color: var(--text3); cursor: pointer; float: right; font-size: 20px; margin-top: -8px; }
+
+  /* LOCKED FEATURE */
+  .locked-overlay {
+    background: rgba(10,13,18,0.85); border-radius: var(--radius-sm);
+    padding: 16px; text-align: center; margin: 10px 0;
+    border: 1px dashed var(--border);
+  }
+  .locked-overlay p { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+  .locked-upgrade-btn {
+    background: linear-gradient(135deg, var(--accent2), #5a3fd4);
+    border: none; border-radius: var(--radius-sm);
+    color: #fff; font-family: var(--font-head);
+    font-size: 12px; font-weight: 700;
+    padding: 7px 16px; cursor: pointer;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .results { animation: slideUp 0.4s ease; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .header { flex-direction: column; align-items: flex-start; }
+    .controls-row { flex-direction: column; align-items: stretch; }
+    .run-btn { justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="lockScreen">
+  <div>
+    <div class="lock-logo">⚡ SocialIntel</div>
+    <div class="lock-sub" style="margin-top:6px">Multi-platform social intelligence · powered by AI</div>
+  </div>
+  <div class="lock-box">
+    <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);text-align:center">Sign in to continue</div>
+    <button class="google-btn" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="divider" style="margin:4px 0"></div>
+    <div style="font-size:11px;color:var(--text3);text-align:center;line-height:1.6">
+      Free tier available · Starter ₦6,000/mo · Pro ₦14,000/mo
+    </div>
+  </div>
+
+  <!-- PRICING CARDS -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:680px;width:100%">
+    <div class="price-card">
+      <div class="price-tier">🆓 Free</div>
+      <div class="price-amount">₦0</div>
+      <ul class="price-features">
+        <li>✓ Reddit only</li>
+        <li>✓ 3 scans/day</li>
+        <li>✓ 25 posts per scan</li>
+        <li>✓ All 6 analysis tabs</li>
+        <li>✗ No export</li>
+        <li>✗ No location filter</li>
+      </ul>
+    </div>
+    <div class="price-card price-card-starter">
+      <div class="price-tier">⚡ Starter</div>
+      <div class="price-amount">₦6,000<span>/mo</span></div>
+      <ul class="price-features">
+        <li>✓ Reddit + X (Twitter)</li>
+        <li>✓ 10 scans/day</li>
+        <li>✓ 50 posts per scan</li>
+        <li>✓ Export to Markdown</li>
+        <li>✓ Location filter</li>
+        <li>✗ No YouTube/TikTok/IG/FB</li>
+      </ul>
+    </div>
+    <div class="price-card price-card-pro">
+      <div class="price-tier">🔥 Pro</div>
+      <div class="price-amount">₦14,000<span>/mo</span></div>
+      <ul class="price-features">
+        <li>✓ All 6 platforms</li>
+        <li>✓ Unlimited scans</li>
+        <li>✓ 100 posts per scan</li>
+        <li>✓ Export to Markdown</li>
+        <li>✓ Location filter</li>
+        <li>✓ Priority new features</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app">
+  <div class="header">
+    <div>
+      <div class="logo">⚡ SocialIntel</div>
+      <div class="header-sub">Multi-platform social intelligence · powered by Groq AI</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div id="tierBadge" class="tier-badge-header"></div>
+      <div id="scanCountBadge" style="font-size:11px;color:var(--text3)"></div>
+      <button id="upgradeBtn" class="upgrade-header-btn" onclick="showUpgradeModal()" style="display:none">⚡ Upgrade</button>
+      <div id="userInfo" style="display:flex;align-items:center;gap:8px">
+        <img id="userAvatar" src="" style="width:28px;height:28px;border-radius:50%;display:none" />
+        <span id="userName" style="font-size:12px;color:var(--text2)"></span>
+        <button onclick="doSignOut()" style="background:none;border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);font-size:11px;padding:4px 10px;cursor:pointer">Sign out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORMS -->
+  <div class="section">
+    <div class="section-title">Platforms</div>
+    <div class="platform-grid" id="platGrid">
+      <button class="plat-btn on" data-plat="reddit" onclick="togglePlat(this,'on')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+        Reddit
+      </button>
+      <button class="plat-btn" data-plat="youtube" onclick="togglePlat(this,'on-red')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        YouTube
+      </button>
+      <button class="plat-btn" data-plat="tiktok" onclick="togglePlat(this,'on')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>
+        TikTok
+      </button>
+      <button class="plat-btn" data-plat="x" onclick="togglePlat(this,'on-blue')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.736-8.859L1.254 2.25H8.08l4.259 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+        X (Twitter)
+      </button>
+      <button class="plat-btn" data-plat="instagram" onclick="togglePlat(this,'on-purple')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        Instagram
+      </button>
+      <button class="plat-btn" data-plat="facebook" onclick="togglePlat(this,'on-blue')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </button>
+    </div>
+    <div style="font-size:11px;color:var(--text3);margin-top:10px">⚠ YouTube, TikTok, Instagram & Facebook require Apify paid plan. Reddit & X work on free tier.</div>
+  </div>
+
+  <!-- TOPICS -->
+  <div class="section">
+    <div class="section-title">Topics of Interest</div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Type any topic and press Enter or click Add. Add as many as you like.</p>
+    <div class="topic-input-row">
+      <input class="topic-input" id="customTopicInput" placeholder="e.g. stock investing, Nigerian politics, AI startups..." onkeydown="if(event.key==='Enter')addCustomTopic()" />
+      <button class="add-topic-btn" onclick="addCustomTopic()">+ Add</button>
+    </div>
+    <div class="selected-topics" id="selectedTopics"></div>
+  </div>
+
+  <!-- LOCATION -->
+  <div class="section">
+    <div class="section-title">Location Focus <span style="font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;color:var(--text3)">(optional)</span></div>
+    <div class="location-row">
+      <input class="loc-input" id="locationInput" placeholder="e.g. Nigeria, UK, Southeast Asia..." />
+    </div>
+    <div class="loc-presets" id="locPresets"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls-row">
+    <button class="run-btn" id="runBtn" onclick="startScan()">
+      ⚡ Run Intelligence Scan
+    </button>
+    <select class="ctrl-select" id="timeFilter">
+      <option value="week">Past 7 days</option>
+      <option value="month">Past 30 days</option>
+      <option value="day">Past 24 hours</option>
+    </select>
+    <select class="ctrl-select" id="postLimit">
+      <option value="25">25 posts/source</option>
+      <option value="50" selected>50 posts/source</option>
+      <option value="100">100 posts/source</option>
+    </select>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="status-line" id="statusLine"></div>
+  </div>
+  <div class="error-box" id="errorBox"></div>
+
+  <!-- RESULTS -->
+  <div class="results" id="results">
+    <div class="divider"></div>
+    <div class="tabs-row">
+      <div class="tab on" onclick="switchTab('trending')">🔥 Trending</div>
+      <div class="tab" onclick="switchTab('tickers')">📈 Hot Tickers</div>
+      <div class="tab" onclick="switchTab('howtos')">❓ How-tos</div>
+      <div class="tab" onclick="switchTab('signals')">📡 Weak Signals</div>
+      <div class="tab" onclick="switchTab('fears')">👁 Unspoken Fears</div>
+      <div class="tab" onclick="switchTab('demand')">🔎 Demand Gaps</div>
+    </div>
+
+    <div class="tab-pane on" id="pane-trending"></div>
+    <div class="tab-pane" id="pane-tickers"></div>
+    <div class="tab-pane" id="pane-howtos"></div>
+    <div class="tab-pane" id="pane-signals"></div>
+    <div class="tab-pane" id="pane-fears"></div>
+
+    <div class="tab-pane" id="pane-demand"></div>
+
+    <button class="export-btn" onclick="exportMd()">⬇ Export Markdown Report</button>
+  </div>
+
+  <div class="footer">SocialIntel · powered by Groq AI + Apify</div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+const APIFY_KEY       = 'apify_api_A5nc9sggEr6LjxVkMG2H3DoOWyNnfC2CHLV3';
+const GROQ_KEY        = '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';
+const PAYSTACK_KEY    = 'pk_live_502bfd6e034b5d9cf2ae62bd649ea4c3acaca64b';
+const PLAN_STARTER    = 'PLN_weylgmleh7zf56i';
+const PLAN_PRO        = 'PLN_jwalzxefnddoeya';
+
+// TIER RULES
+const TIER_RULES = {
+  free:    { platforms: ['reddit'], scansPerDay: 3,         postLimit: 25,  export: false, location: false },
+  starter: { platforms: ['reddit','x'], scansPerDay: 10,   postLimit: 50,  export: true,  location: true  },
+  pro:     { platforms: ['reddit','x','youtube','tiktok','instagram','facebook'], scansPerDay: 999, postLimit: 100, export: true, location: true }
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+window.onUserReady = function(user, tier) {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  updateUserUI(user, tier);
+  enforceTierUI(tier);
+};
+
+window.onUserSignedOut = function() {
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+};
+
+function updateUserUI(user, tier) {
+  const avatar = document.getElementById('userAvatar');
+  avatar.src = user.photoURL || '';
+  avatar.style.display = user.photoURL ? 'block' : 'none';
+  document.getElementById('userName').textContent = user.displayName || user.email;
+
+  const badge = document.getElementById('tierBadge');
+  const labels = { free: '🆓 Free', starter: '⚡ Starter', pro: '🔥 Pro' };
+  const classes = { free: 'tier-free', starter: 'tier-starter', pro: 'tier-pro' };
+  badge.textContent = labels[tier] || 'Free';
+  badge.className = 'tier-badge-header ' + (classes[tier] || 'tier-free');
+
+  if (tier !== 'pro') document.getElementById('upgradeBtn').style.display = 'block';
+  updateScanCount();
+}
+
+function updateScanCount() {
+  const tier = window._userTier || 'free';
+  const rules = TIER_RULES[tier];
+  const today = new Date().toDateString();
+  let scans = window._lastScanDate === today ? (window._scansToday || 0) : 0;
+  if (rules.scansPerDay < 999) {
+    document.getElementById('scanCountBadge').textContent = `${scans}/${rules.scansPerDay} scans today`;
+  } else {
+    document.getElementById('scanCountBadge').textContent = 'Unlimited scans';
+  }
+}
+
+function enforceTierUI(tier) {
+  const rules = TIER_RULES[tier];
+  // Lock platforms not available for tier
+  document.querySelectorAll('.plat-btn').forEach(btn => {
+    const plat = btn.dataset.plat;
+    if (!rules.platforms.includes(plat)) {
+      btn.disabled = true;
+      btn.style.opacity = '0.35';
+      btn.title = 'Upgrade to access ' + plat;
+      activePlats.delete(plat);
+      btn.classList.remove('on','on-purple','on-red','on-blue');
+    }
+  });
+  // Lock post limit
+  const limitSel = document.getElementById('postLimit');
+  Array.from(limitSel.options).forEach(opt => {
+    if (parseInt(opt.value) > rules.postLimit) opt.disabled = true;
+  });
+  if (parseInt(limitSel.value) > rules.postLimit) limitSel.value = rules.postLimit;
+  // Lock location
+  if (!rules.location) {
+    document.getElementById('locationInput').disabled = true;
+    document.getElementById('locationInput').placeholder = 'Upgrade to use location filter';
+  }
+}
+
+async function signInGoogle() {
+  try {
+    await window._signInWithPopup(window._auth, window._provider);
+  } catch(e) {
+    alert('Sign in failed: ' + e.message);
+  }
+}
+
+async function doSignOut() {
+  await window._signOut(window._auth);
+}
+
+// ============================================================
+// UPGRADE MODAL
+// ============================================================
+let selectedPlan = 'starter';
+
+function showUpgradeModal() {
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.id = 'upgradeModal';
+  modal.innerHTML = `
+    <div class="modal-box">
+      <button class="modal-close" onclick="document.getElementById('upgradeModal').remove()">×</button>
+      <div class="modal-title">Upgrade SocialIntel</div>
+      <div class="modal-sub">Unlock more platforms, unlimited scans, and export.</div>
+      <div class="modal-plans">
+        <div class="modal-plan selected" id="plan-starter" onclick="selectPlan('starter')">
+          <div class="modal-plan-name">⚡ Starter</div>
+          <div class="modal-plan-price">₦6,000<span style="font-size:12px;font-weight:400;color:var(--text3)">/mo</span></div>
+          <div class="modal-plan-features">Reddit + X · 10 scans/day · 50 posts · Export · Location</div>
+        </div>
+        <div class="modal-plan" id="plan-pro" onclick="selectPlan('pro')">
+          <div class="modal-plan-name">🔥 Pro</div>
+          <div class="modal-plan-price">₦14,000<span style="font-size:12px;font-weight:400;color:var(--text3)">/mo</span></div>
+          <div class="modal-plan-features">All 6 platforms · Unlimited scans · 100 posts · Everything unlocked</div>
+        </div>
+      </div>
+      <button class="pay-btn" onclick="initiatePayment()">Pay with Paystack →</button>
+      <div style="font-size:11px;color:var(--text3);text-align:center">Secure payment via Paystack · Cancel anytime</div>
+    </div>`;
+  document.body.appendChild(modal);
+}
+
+function selectPlan(plan) {
+  selectedPlan = plan;
+  document.getElementById('plan-starter').classList.toggle('selected', plan === 'starter');
+  document.getElementById('plan-pro').classList.toggle('selected', plan === 'pro');
+}
+
+function initiatePayment() {
+  const user = window._currentUser;
+  if (!user) { alert('Please sign in first'); return; }
+  const amount = selectedPlan === 'starter' ? 600000 : 1400000; // kobo
+  const planCode = selectedPlan === 'starter' ? PLAN_STARTER : PLAN_PRO;
+
+  const handler = PaystackPop.setup({
+    key: PAYSTACK_KEY,
+    email: user.email,
+    amount: amount,
+    currency: 'NGN',
+    plan: planCode,
+    ref: 'SI_' + Date.now(),
+    callback: async function(response) {
+      // Payment successful — update Firestore
+      const userRef = window._doc(window._db, 'users', user.uid);
+      await window._setDoc(userRef, {
+        tier: selectedPlan,
+        paystackRef: response.reference,
+        upgradedAt: new Date().toISOString()
+      }, { merge: true });
+      window._userTier = selectedPlan;
+      document.getElementById('upgradeModal')?.remove();
+      updateUserUI(user, selectedPlan);
+      enforceTierUI(selectedPlan);
+      alert('🎉 Welcome to ' + (selectedPlan === 'pro' ? 'Pro' : 'Starter') + '! Your account has been upgraded.');
+    },
+    onClose: function() {}
+  });
+  handler.openIframe();
+}
+
+// ============================================================
+// PLATFORMS
+// ============================================================
+const activePlats = new Set(['reddit']);
+
+function togglePlat(btn, activeClass) {
+  const plat = btn.dataset.plat;
+  // Remove all active classes
+  btn.classList.remove('on','on-purple','on-red','on-blue');
+  if (activePlats.has(plat)) {
+    activePlats.delete(plat);
+  } else {
+    activePlats.add(plat);
+    btn.classList.add(activeClass);
+  }
+}
+
+// ============================================================
+// TOPICS
+// ============================================================
+const PRESET_TOPICS = [
+  'Stocks & Investing','Crypto','Real Estate','Personal Finance',
+  'Politics','Government','Technology','AI & Machine Learning',
+  'Startups','Economy','Health','Sports','Entertainment',
+  'Climate & Environment','Business'
+];
+
+let selectedTopics = new Set();
+
+// topic presets removed — free-type only
+
+function addCustomTopic() {
+  const inp = document.getElementById('customTopicInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  selectedTopics.add(val);
+  inp.value = '';
+  renderSelectedTopics();
+}
+
+function renderSelectedTopics() {
+  const el = document.getElementById('selectedTopics');
+  el.innerHTML = '';
+  selectedTopics.forEach(t => {
+    const chip = document.createElement('div');
+    chip.className = 'sel-chip';
+    chip.innerHTML = `${t}<button onclick="removeTopic('${t.replace(/'/g,"\\'")}')">×</button>`;
+    el.appendChild(chip);
+  });
+}
+
+function removeTopic(t) {
+  selectedTopics.delete(t);
+  // also uncheck preset chip if exists
+  document.querySelectorAll('.topic-chip').forEach(c => {
+    if (c.textContent === t) c.classList.remove('on');
+  });
+  renderSelectedTopics();
+}
+
+// ============================================================
+// LOCATIONS
+// ============================================================
+const LOC_PRESETS = ['Global','Nigeria','United States','United Kingdom','India','South Africa','Canada','Australia','Europe'];
+const locPresetsEl = document.getElementById('locPresets');
+LOC_PRESETS.forEach(loc => {
+  const c = document.createElement('div');
+  c.className = 'loc-chip';
+  c.textContent = loc;
+  c.onclick = () => {
+    document.querySelectorAll('.loc-chip').forEach(x => x.classList.remove('on'));
+    const locInput = document.getElementById('locationInput');
+    if (locInput.value === loc) {
+      locInput.value = '';
+    } else {
+      locInput.value = loc === 'Global' ? '' : loc;
+      c.classList.add('on');
+    }
+  };
+  locPresetsEl.appendChild(c);
+});
+
+// ============================================================
+// APIFY FETCH — Reddit
+// ============================================================
+async function apifyFetchReddit(subreddit, timeFilter, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/trudax~reddit-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      subreddits: [subreddit], type: 'posts',
+      sort: 'top', time: timeFilter, maxItems: parseInt(limit),
+      proxy: { useApifyProxy: true }
+    })
+  });
+  if (!run.ok) throw new Error(`Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  if (!runId) throw new Error('No run ID');
+
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.title||'', body: (p.body||'').slice(0,500), score: p.score||0, comments: p.numberOfComments||0 }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('Apify timeout');
+}
+
+// ============================================================
+// APIFY FETCH — YouTube
+// ============================================================
+async function apifyFetchYoutube(query, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/streamers~youtube-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ searchKeywords: query, maxResults: parseInt(limit), proxy: { useApifyProxy: true } })
+  });
+  if (!run.ok) throw new Error(`YouTube Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.title||'', body: (p.description||'').slice(0,500), score: p.viewCount||0, comments: p.commentCount||0, source: 'youtube' }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('YouTube Apify timeout');
+}
+
+// ============================================================
+// APIFY FETCH — TikTok
+// ============================================================
+async function apifyFetchTiktok(query, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/clockworks~tiktok-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ searchTerms: [query], maxItems: parseInt(limit), proxy: { useApifyProxy: true } })
+  });
+  if (!run.ok) throw new Error(`TikTok Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.text||'', body: '', score: p.playCount||0, comments: p.commentCount||0, source: 'tiktok' }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('TikTok Apify timeout');
+}
+
+// ============================================================
+// APIFY FETCH — X (Twitter)
+// ============================================================
+async function apifyFetchX(query, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/apidojo~tweet-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ searchTerms: [query], maxItems: parseInt(limit), proxy: { useApifyProxy: true } })
+  });
+  if (!run.ok) throw new Error(`X Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.full_text||p.text||'', body: '', score: p.favorite_count||0, comments: p.reply_count||0, source: 'x' }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('X Apify timeout');
+}
+
+// ============================================================
+// APIFY FETCH — Instagram
+// ============================================================
+async function apifyFetchInstagram(query, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/apify~instagram-hashtag-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hashtags: [query.replace(/\s+/g,'')] , resultsLimit: parseInt(limit), proxy: { useApifyProxy: true } })
+  });
+  if (!run.ok) throw new Error(`Instagram Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.caption||p.alt||'', body: '', score: p.likesCount||0, comments: p.commentsCount||0, source: 'instagram' }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('Instagram Apify timeout');
+}
+
+// ============================================================
+// APIFY FETCH — Facebook
+// ============================================================
+async function apifyFetchFacebook(query, limit) {
+  const run = await fetch(`https://api.apify.com/v2/acts/apify~facebook-posts-scraper/runs?token=${APIFY_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ searchTerms: [query], maxItems: parseInt(limit), proxy: { useApifyProxy: true } })
+  });
+  if (!run.ok) throw new Error(`Facebook Apify run failed: ${run.status}`);
+  const runData = await run.json();
+  const runId = runData.data?.id;
+  for (let i = 0; i < 30; i++) {
+    await new Promise(r => setTimeout(r, 3000));
+    const st = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${APIFY_KEY}`);
+    const stData = await st.json();
+    if (stData.data?.status === 'SUCCEEDED') {
+      const dsId = stData.data?.defaultDatasetId;
+      const items = await fetch(`https://api.apify.com/v2/datasets/${dsId}/items?token=${APIFY_KEY}&limit=${limit}`);
+      const posts = await items.json();
+      return posts.map(p => ({ title: p.text||p.message||'', body: '', score: p.likes||0, comments: p.comments||0, source: 'facebook' }));
+    }
+    if (['FAILED','ABORTED','TIMED-OUT'].includes(stData.data?.status)) throw new Error(`Run ${stData.data.status}`);
+  }
+  throw new Error('Facebook Apify timeout');
+}
+
+// ============================================================
+// GROQ ANALYSIS
+// ============================================================
+async function groqAnalyze(allData, topics, location) {
+  const topicStr = topics.length ? topics.join(', ') : 'general investing and finance';
+  const locStr = location ? ` Focus especially on content relevant to ${location}.` : '';
+
+  const summary = Object.entries(allData).map(([src, posts]) =>
+    `--- ${src.toUpperCase()} (${posts.length} posts) ---\n` +
+    posts.slice(0,40).map(p => `• [${p.score} pts] ${p.title} ${p.body ? '— '+p.body.slice(0,120) : ''}`).join('\n')
+  ).join('\n\n');
+
+  const prompt = `You are an expert social media intelligence analyst. Analyze the following content collected from social platforms about: ${topicStr}.${locStr}
+
+Here is the collected data:
+${summary.slice(0, 18000)}
+
+Return ONLY a valid JSON object with this exact structure (no markdown, no backticks):
+{
+  "trending": [
+    { "title": "string", "summary": "string", "heat": "high|medium|low", "sources": ["reddit","youtube","tiktok","x"], "tags": ["tag1","tag2"] }
+  ],
+  "tickers": [
+    { "ticker": "SYMBOL", "company": "Company Name", "sentiment": "bullish|bearish|mixed", "why": "string", "sources": ["reddit"] }
+  ],
+  "howtos": [
+    { "question": "string", "context": "string", "level": "beginner|intermediate|advanced" }
+  ],
+  "weakSignals": [
+    { "signal": "string", "why": "string", "timeframe": "string", "sources": ["reddit"] }
+  ],
+  "unspokenFears": [
+    { "fear": "string", "evidence": "string", "contentAngle": "string" }
+  ],
+  "demandGaps": [
+    { "query": "string", "demand": "high|medium|low", "trend": "rising|stable|exploding", "why": "string", "contentGap": "string", "sources": ["reddit"] }
+  ]
+}
+
+Produce 5-8 items per section. For demandGaps, identify the specific questions, phrases and searches people are actively looking for answers to — things the audience is hungry for but that have little or no good content answering them. Make insights specific, actionable, and grounded in the data.`;
+
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${GROQ_KEY}`
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`Groq API error ${res.status}: ${txt.slice(0,200)}`);
+  }
+
+  const data = await res.json();
+  const raw = data.choices[0].message.content;
+  const clean = raw.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+// ============================================================
+// MAIN SCAN
+// ============================================================
+let lastResults = null;
+
+function setStatus(msg) {
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('statusLine').textContent = msg;
+}
+function setProgress(pct) {
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+function showErr(msg) {
+  const el = document.getElementById('errorBox');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+const REDDIT_SUBS = [
+  'investing','stocks','wallstreetbets','StockMarket','options',
+  'ValueInvesting','personalfinance','dividends','ETFs','Daytrading'
+];
+
+async function startScan() {
+  const tier = window._userTier || 'free';
+  const rules = TIER_RULES[tier];
+
+  // Check scan limit
+  const today = new Date().toDateString();
+  let scansToday = window._lastScanDate === today ? (window._scansToday || 0) : 0;
+  if (rules.scansPerDay < 999 && scansToday >= rules.scansPerDay) {
+    showErr(`You've used all ${rules.scansPerDay} scans for today on the ${tier} plan. Upgrade for more!`);
+    showUpgradeModal();
+    return;
+  }
+
+  const topics = [...selectedTopics];
+  const location = document.getElementById('locationInput').value.trim();
+  const timeFilter = document.getElementById('timeFilter').value;
+  const limit = Math.min(parseInt(document.getElementById('postLimit').value), rules.postLimit).toString();
+
+  if (activePlats.size === 0) { showErr('Select at least one platform.'); return; }
+  if (topics.length === 0) { showErr('Select or add at least one topic of interest.'); return; }
+
+  // Filter platforms by tier
+  const allowedPlats = new Set([...activePlats].filter(p => rules.platforms.includes(p)));
+  if (allowedPlats.size === 0) { showErr('No allowed platforms selected for your tier. Upgrade to access more platforms.'); return; }
+
+  document.getElementById('errorBox').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('runBtn').disabled = true;
+
+  // Increment scan count
+  window._scansToday = scansToday + 1;
+  window._lastScanDate = today;
+  if (window._currentUser) {
+    const userRef = window._doc(window._db, 'users', window._currentUser.uid);
+    window._setDoc(userRef, { scansToday: window._scansToday, lastScanDate: today }, { merge: true });
+  }
+  updateScanCount();
+
+  const allData = {};
+  const topicQuery = topics.join(' ') + (location ? ' ' + location : '');
+  let step = 0;
+  const totalSteps = activePlats.size + 1;
+
+  try {
+    // REDDIT
+    if (allowedPlats.has('reddit')) {
+      const subs = REDDIT_SUBS.slice(0, 5);
+      for (let i = 0; i < subs.length; i++) {
+        setStatus(`Reddit: scanning r/${subs[i]}... (${i+1}/${subs.length})`);
+        setProgress(Math.round(((step + i/subs.length) / totalSteps) * 70));
+        try {
+          const posts = await apifyFetchReddit(subs[i], timeFilter, limit);
+          if (!allData['reddit']) allData['reddit'] = [];
+          allData['reddit'].push(...posts.map(p => ({...p, source:'reddit'})));
+        } catch(e) { setStatus(`Reddit r/${subs[i]} skipped: ${e.message}`); }
+      }
+      step++;
+    }
+
+    // YOUTUBE
+    if (allowedPlats.has('youtube')) {
+      setStatus(`YouTube: searching "${topicQuery}"...`);
+      setProgress(Math.round((step / totalSteps) * 70));
+      try {
+        allData['youtube'] = await apifyFetchYoutube(topicQuery, Math.min(limit, 30));
+      } catch(e) { setStatus(`YouTube skipped: ${e.message}`); allData['youtube'] = []; }
+      step++;
+    }
+
+    // TIKTOK
+    if (allowedPlats.has('tiktok')) {
+      setStatus(`TikTok: searching "${topicQuery}"...`);
+      setProgress(Math.round((step / totalSteps) * 70));
+      try {
+        allData['tiktok'] = await apifyFetchTiktok(topicQuery, Math.min(limit, 30));
+      } catch(e) { setStatus(`TikTok skipped: ${e.message}`); allData['tiktok'] = []; }
+      step++;
+    }
+
+    // X
+    if (allowedPlats.has('x')) {
+      setStatus(`X (Twitter): searching "${topicQuery}"...`);
+      setProgress(Math.round((step / totalSteps) * 70));
+      try {
+        allData['x'] = await apifyFetchX(topicQuery, Math.min(limit, 50));
+      } catch(e) { setStatus(`X skipped: ${e.message}`); allData['x'] = []; }
+      step++;
+    }
+
+    // INSTAGRAM
+    if (allowedPlats.has('instagram')) {
+      setStatus(`Instagram: searching "${topicQuery}"...`);
+      setProgress(Math.round((step / totalSteps) * 70));
+      try {
+        allData['instagram'] = await apifyFetchInstagram(topicQuery, Math.min(limit, 30));
+      } catch(e) { setStatus(`Instagram skipped: ${e.message}`); allData['instagram'] = []; }
+      step++;
+    }
+
+    // FACEBOOK
+    if (allowedPlats.has('facebook')) {
+      setStatus(`Facebook: searching "${topicQuery}"...`);
+      setProgress(Math.round((step / totalSteps) * 70));
+      try {
+        allData['facebook'] = await apifyFetchFacebook(topicQuery, Math.min(limit, 30));
+      } catch(e) { setStatus(`Facebook skipped: ${e.message}`); allData['facebook'] = []; }
+      step++;
+    }
+
+    setStatus('🧠 Analyzing with Groq AI...');
+    setProgress(80);
+    const analysis = await groqAnalyze(allData, topics, location);
+    setProgress(100);
+
+    const totalPosts = Object.values(allData).reduce((a,b) => a + b.length, 0);
+    setStatus(`✅ Done — ${totalPosts} posts analyzed across ${Object.keys(allData).length} platform(s).`);
+    lastResults = analysis;
+    renderAll(analysis);
+
+  } catch(e) {
+    showErr('Error: ' + e.message);
+    setStatus('');
+  } finally {
+    document.getElementById('runBtn').disabled = false;
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+const heatColor = { high:'#ff6b6b', medium:'#ffb830', low:'#00e5a0' };
+const heatLabel = { high:'🔥 Hot', medium:'⚡ Warm', low:'🌱 Emerging' };
+
+function srcBadge(src) {
+  const map = { reddit:'src-reddit', youtube:'src-youtube', tiktok:'src-tiktok', x:'src-x', instagram:'src-instagram', facebook:'src-facebook' };
+  return `<span class="src-badge ${map[src]||''}">${src}</span>`;
+}
+
+function renderAll(d) {
+  // TRENDING
+  document.getElementById('pane-trending').innerHTML =
+    (d.trending||[]).map(t => `
+      <div class="rcard">
+        <div class="rmeta">
+          <span class="heat-dot" style="background:${heatColor[t.heat]||'#888'}"></span>
+          <span style="font-size:12px;font-weight:600;color:${heatColor[t.heat]||'#888'}">${heatLabel[t.heat]||t.heat}</span>
+          ${(t.sources||[]).map(srcBadge).join('')}
+        </div>
+        <div class="rtitle">${t.title}</div>
+        <div class="rbody">${t.summary}</div>
+        ${(t.tags||[]).length ? `<div class="tag-row">${t.tags.map(x=>`<span class="pill-sm">${x}</span>`).join('')}</div>` : ''}
+      </div>`).join('');
+
+  // TICKERS
+  document.getElementById('pane-tickers').innerHTML =
+    `<p class="pane-intro">Stocks, assets, and instruments getting the most attention across your selected platforms.</p>` +
+    (d.tickers||[]).map(t => {
+      const cls = t.sentiment==='bullish'?'sent-bull':t.sentiment==='bearish'?'sent-bear':'sent-mix';
+      return `<div class="ticker-card">
+        <div>
+          <div class="ticker-badge ${cls}">${t.ticker}</div>
+          <div class="ticker-label" style="color:${t.sentiment==='bullish'?'var(--accent)':t.sentiment==='bearish'?'var(--accent3)':'var(--accent4)'}">${t.sentiment}</div>
+        </div>
+        <div>
+          <div class="rtitle" style="font-size:14px">${t.company}</div>
+          <div class="rbody">${t.why}</div>
+          <div class="tag-row" style="margin-top:6px">${(t.sources||[]).map(srcBadge).join('')}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+  // HOW-TOS
+  document.getElementById('pane-howtos').innerHTML =
+    `<p class="pane-intro">The most common questions people are asking — surface content ideas, FAQs, and educational gaps.</p>` +
+    (d.howtos||[]).map(h => `
+      <div class="howto-row">
+        <div class="howto-q">${h.question}</div>
+        <div class="howto-ctx">${h.context}</div>
+        <div style="margin-top:5px">
+          <span class="level-badge level-${(h.level||'beginner').toLowerCase()}">${h.level||'beginner'}</span>
+        </div>
+      </div>`).join('');
+
+  // WEAK SIGNALS
+  document.getElementById('pane-signals').innerHTML =
+    `<p class="pane-intro">Low-volume topics showing early momentum — likely to go mainstream. Get ahead of the curve.</p>` +
+    (d.weakSignals||[]).map(s => `
+      <div class="signal-row">
+        <div class="signal-q">${s.signal}</div>
+        <div class="signal-ctx">${s.why}</div>
+        ${s.timeframe ? `<div style="margin-top:4px;font-size:11px;font-weight:600;color:var(--accent4)">${s.timeframe}</div>` : ''}
+        <div class="tag-row">${(s.sources||[]).map(srcBadge).join('')}</div>
+      </div>`).join('');
+
+  // UNSPOKEN FEARS
+  document.getElementById('pane-fears').innerHTML =
+    `<p class="pane-intro">What people are actually worried about — reading between the lines of posts and comments.</p>` +
+    (d.unspokenFears||[]).map(f => `
+      <div class="fear-row">
+        <div class="fear-q">${f.fear}</div>
+        <div class="fear-ctx">${f.evidence}</div>
+        ${f.contentAngle ? `<div class="fear-angle">Content angle: ${f.contentAngle}</div>` : ''}
+      </div>`).join('');
+
+  // DEMAND GAPS
+  document.getElementById('pane-demand').innerHTML =
+    `<p class="pane-intro">What people are actively searching for and asking about — but can't find good content on. Your biggest content opportunities.</p>` +
+    (d.demandGaps||[]).map(g => {
+      const demandCls = g.demand==='high'?'demand-high':g.demand==='medium'?'demand-medium':'demand-low';
+      const demandLabel = g.demand==='high'?'🔥 High Demand':g.demand==='medium'?'⚡ Medium Demand':'🌱 Low Demand';
+      const trendCls = g.trend==='exploding'?'trend-exploding':g.trend==='rising'?'trend-rising':'trend-stable';
+      const trendLabel = g.trend==='exploding'?'🚀 Exploding':g.trend==='rising'?'↑ Rising':'→ Stable';
+      return `<div class="demand-card">
+        <div class="demand-header">
+          <div class="demand-query">🔎 "${g.query}"</div>
+          <span class="demand-badge ${demandCls}">${demandLabel}</span>
+        </div>
+        <div class="demand-meta">
+          <span class="demand-trend ${trendCls}">${trendLabel}</span>
+          ${(g.sources||[]).map(srcBadge).join('')}
+        </div>
+        <div class="demand-body">${g.why}</div>
+        ${g.contentGap ? `<div class="demand-gap"><strong>💡 Content Gap:</strong> ${g.contentGap}</div>` : ''}
+      </div>`;
+    }).join('');
+
+  document.getElementById('results').style.display = 'block';
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+const TAB_NAMES = ['trending','tickers','howtos','signals','fears','demand'];
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('on', TAB_NAMES[i]===name));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('on', p.id==='pane-'+name));
+}
+
+// ============================================================
+// EXPORT
+// ============================================================
+function exportMd() {
+  if (!lastResults) return;
+  const tier = window._userTier || 'free';
+  if (!TIER_RULES[tier].export) {
+    showUpgradeModal();
+    return;
+  }
+  const d = lastResults;
+  let md = `# Social Intelligence Report\n_${new Date().toLocaleDateString()}_\n\n`;
+  md += `## 🔥 Trending\n\n`;
+  (d.trending||[]).forEach(t => { md += `### ${t.title}\n**Heat:** ${t.heat}\n\n${t.summary}\n\nTags: ${(t.tags||[]).join(', ')}\n\n`; });
+  md += `## 📈 Hot Tickers\n\n`;
+  (d.tickers||[]).forEach(t => { md += `- **$${t.ticker}** (${t.company}) — ${t.sentiment}: ${t.why}\n`; });
+  md += `\n## ❓ How-tos\n\n`;
+  (d.howtos||[]).forEach(h => { md += `- **${h.question}** _(${h.level})_\n  ${h.context}\n`; });
+  md += `\n## 📡 Weak Signals\n\n`;
+  (d.weakSignals||[]).forEach(s => { md += `- **${s.signal}**: ${s.why} ${s.timeframe||''}\n`; });
+  md += `\n## 👁 Unspoken Fears\n\n`;
+  (d.unspokenFears||[]).forEach(f => { md += `- **${f.fear}**: ${f.evidence}\n  _Content angle: ${f.contentAngle}_\n`; });
+  md += `\n## 🔎 Demand Gaps\n\n`;
+  (d.demandGaps||[]).forEach(g => { md += `- **"${g.query}"** — ${g.demand} demand, ${g.trend}\n  ${g.why}\n  _Content gap: ${g.contentGap}_\n`; });
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `socialintel-report-${Date.now()}.md`; a.click();
+}
+</script>
+</body>
+</html>
