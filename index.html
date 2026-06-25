@@ -23,6 +23,8 @@
 
 <!-- Canonical -->
 <link rel="canonical" href="https://socialintel-ashen.vercel.app/" />
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2930782246675591" crossorigin="anonymous"></script>
 <!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -978,6 +980,17 @@
   .si-nav-mobile .si-nav-cta {
     margin-top: 10px; justify-content: center; width: 100%;
   }
+  
+  /* Account Dropdown */
+  .account-menu {
+    animation: slideDown 0.15s ease-out;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .account-menu a:hover { background: var(--bg3); }
+  
   @media (max-width: 680px) {
     .si-nav-links { display: none !important; }
     .si-nav-hamburger { display: flex !important; }
@@ -1086,15 +1099,40 @@
   <!-- STICKY NAV -->
   <nav class="si-nav" id="siNav">
     <div class="si-nav-inner">
-      <a href="index.html" class="si-nav-logo">⚡ SocialIntel</a>
-      <div class="si-nav-links"><a href="pricing.html" class="">Pricing</a><a href="faq.html" class="">FAQ</a><a href="about.html" class="">About</a><a href="contact.html" class="">Contact</a><button class="si-nav-cta" onclick="signInGoogle()"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button></div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <a href="index.html" class="si-nav-logo">⚡ SocialIntel</a>
+        <div style="font-size:11px;color:var(--text3);font-style:italic;display:none" id="navTagline">While others post blindly, you post with purpose.</div>
+      </div>
+      <div class="si-nav-links"><a href="pricing.html" class="">Pricing</a><a href="faq.html" class="">FAQ</a><a href="about.html" class="">About</a><a href="contact.html" class="">Contact</a>
+        <div style="display:flex;align-items:center;gap:8px;margin-left:8px">
+          <div id="tierBadgeNav" style="font-size:10px;font-weight:700;text-transform:uppercase;background:rgba(0,229,160,0.15);border:1px solid rgba(0,229,160,0.3);color:var(--accent);padding:4px 10px;border-radius:99px;display:none">Free</div>
+          <!-- Account dropdown when logged in -->
+          <div id="accountDropdown" style="display:none;position:relative">
+            <button class="si-nav-account-btn" onclick="toggleAccountMenu()" style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:12px;font-weight:600;cursor:pointer">
+              <span id="userInitials">A</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div id="accountMenu" class="account-menu" style="display:none;position:absolute;top:100%;right:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);min-width:160px;margin-top:4px;z-index:1000;box-shadow:0 4px 12px rgba(0,0,0,0.25)">
+              <div style="padding:12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2)">
+                <div id="menuUserEmail" style="font-weight:600;margin-bottom:4px">user@email.com</div>
+                <div id="menuUserTier" style="font-size:10px;color:var(--text3);text-transform:uppercase">Tier: Free</div>
+              </div>
+              <a href="#" onclick="showAccountSettings();return false" style="display:block;padding:10px 12px;color:var(--text2);text-decoration:none;font-size:12px;border-bottom:1px solid var(--border);transition:all 0.2s">👤 Account Settings</a>
+              <a href="#" onclick="showUpgradeModal();return false" style="display:block;padding:10px 12px;color:var(--accent);text-decoration:none;font-size:12px;font-weight:600;border-bottom:1px solid var(--border);transition:all 0.2s">⚡ Upgrade</a>
+              <a href="#" onclick="logoutUser();return false" style="display:block;padding:10px 12px;color:var(--text2);text-decoration:none;font-size:12px;transition:all 0.2s">🚪 Sign out</a>
+            </div>
+          </div>
+          <!-- Sign in button when logged out -->
+          <button id="signInBtn" class="si-nav-cta" onclick="signInGoogle()" style="display:block"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button>
+        </div>
+      </div>
       <button class="si-nav-hamburger" onclick="toggleSiNav()" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
     </div>
     <div class="si-nav-mobile" id="siNavMobile">
       <a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-      <button class="si-nav-cta" onclick="signInGoogle()"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button>
+      <button id="signInBtnMobile" class="si-nav-cta" onclick="signInGoogle()" style="display:block;width:100%"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button>
     </div>
   </nav>
 
@@ -1226,19 +1264,7 @@
 <div id="app">
 
   <!-- ===== APP NAV ===== -->
-  <nav class="si-nav" id="siNav">
-      <div class="si-nav-inner">
-        <a href="index.html" class="si-nav-logo">⚡ SocialIntel</a>
-        <div class="si-nav-links"><a href="pricing.html" class="">Pricing</a><a href="faq.html" class="">FAQ</a><a href="about.html" class="">About</a><a href="contact.html" class="">Contact</a><button class="si-nav-cta" onclick="signInGoogle()"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button></div>
-        <button class="si-nav-hamburger" onclick="toggleSiNav()" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
-      </div>
-      <div class="si-nav-mobile" id="siNavMobile">
-        <a href="pricing.html">Pricing</a><a href="faq.html">FAQ</a><a href="about.html">About</a><a href="contact.html">Contact</a>
-        <button class="si-nav-cta" onclick="signInGoogle()"><svg width="15" height="15" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Sign in free</button>
-      </div>
-    </nav>
+
 
   <div class="header">
     <div>
@@ -1439,27 +1465,59 @@ function showAdModal() {
   modal.style.cssText = `
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(0,0,0,0.85); z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
   `;
   modal.innerHTML = `
-    <div style="background: var(--bg); border-radius: var(--radius); padding: 40px; max-width: 500px; text-align: center; color: var(--text)">
-      <div style="font-size: 14px; color: var(--text3); margin-bottom: 20px">Advertisement</div>
-      <div style="font-size: 48px; margin-bottom: 20px">📺</div>
-      <div style="font-size: 16px; font-weight: 600; margin-bottom: 10px">Watch 30 seconds for 30 minutes of Pro access</div>
-      <div style="font-size: 13px; color: var(--text2); margin-bottom: 30px">Real ads will appear here. For now, click the button below to proceed.</div>
-      <div id="adTimer" style="font-size: 32px; font-weight: 700; color: var(--accent); margin-bottom: 30px">30</div>
-      <button onclick="completeAd()" style="background: linear-gradient(135deg, var(--accent), #00b37a); color: #000; border: none; border-radius: var(--radius); padding: 14px 28px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; margin-bottom: 10px">✅ I watched the ad</button>
-      <button onclick="closeAdModal()" style="background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius); padding: 10px 28px; font-weight: 500; cursor: pointer; width: 100%; font-size: 13px">Close</button>
+    <div style="background: var(--bg); border-radius: var(--radius); padding: 30px; max-width: 600px; width: 100%; color: var(--text)">
+      <div style="font-size: 12px; color: var(--text3); margin-bottom: 15px; text-align: center">ADVERTISEMENT</div>
+      <div id="adsenseContainer" style="text-align: center; margin-bottom: 20px; min-height: 250px; display: flex; align-items: center; justify-content: center; background: var(--bg2); border-radius: var(--radius-sm)">
+        <!-- Google AdSense will display here -->
+      </div>
+      <div style="text-align: center; margin-bottom: 15px">
+        <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px">Watch this ad for 30 minutes of Pro access</div>
+        <div style="font-size: 13px; color: var(--text2)">You can close after <span id="adTimer" style="font-weight: 700; color: var(--accent)">10</span> seconds</div>
+      </div>
+      <button id="adCloseBtn" onclick="closeAdModal()" style="background: var(--bg3); border: 1px solid var(--border); color: var(--text2); border-radius: var(--radius); padding: 12px 24px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; opacity: 0.5; cursor: not-allowed" disabled>Close (wait 10s)</button>
+      <button onclick="completeAd()" style="background: linear-gradient(135deg, var(--accent), #00b37a); color: #000; border: none; border-radius: var(--radius); padding: 12px 24px; font-weight: 600; cursor: pointer; width: 100%; font-size: 14px; margin-top: 10px">✅ Unlock 30 min Pro Access</button>
     </div>
   `;
   document.body.appendChild(modal);
 
-  // Start countdown
-  let secs = 30;
+  // Insert Google AdSense ad
+  const adsenseContainer = document.getElementById('adsenseContainer');
+  const adScript = document.createElement('ins');
+  adScript.className = 'adsbygoogle';
+  adScript.style.display = 'inline-block';
+  adScript.style.width = '100%';
+  adScript.style.height = '250px';
+  adScript.setAttribute('data-ad-client', 'ca-pub-2930782246675591');
+  adScript.setAttribute('data-ad-slot', ''); // Google will auto-fill
+  adScript.setAttribute('data-ad-format', 'auto');
+  adScript.setAttribute('data-full-width-responsive', 'true');
+  adsenseContainer.appendChild(adScript);
+
+  // Push ads to reload and show the new ad
+  if (window.adsbygoogle) {
+    try {
+      window.adsbygoogle.push({});
+    } catch(e) {
+      console.log('AdSense not loaded yet');
+    }
+  }
+
+  // Countdown timer (10 seconds before close button is enabled)
+  let secs = 10;
+  const closeBtn = document.getElementById('adCloseBtn');
   const timer = setInterval(() => {
     secs--;
     document.getElementById('adTimer').textContent = secs;
-    if (secs <= 0) clearInterval(timer);
+    if (secs <= 0) {
+      clearInterval(timer);
+      closeBtn.disabled = false;
+      closeBtn.style.opacity = '1';
+      closeBtn.style.cursor = 'pointer';
+      closeBtn.textContent = 'Close';
+    }
   }, 1000);
 }
 
@@ -1518,6 +1576,7 @@ window.onUserReady = function(user, tier) {
   updateUserUI(user, tier);
   enforceTierUI(tier);
   renderSavedSearches();
+  updateNavbarOnLogin(user, tier);
 };
 
 // Flush any pending auth that fired before this function was defined
@@ -1530,6 +1589,7 @@ if (window._pendingUser) {
 window.onUserSignedOut = function() {
   document.getElementById('lockScreen').style.display = 'block';
   document.getElementById('app').style.display = 'none';
+  updateNavbarOnLogin(null, null);
 };
 
 function updateUserUI(user, tier) {
@@ -1703,6 +1763,85 @@ function initiatePayment() {
   });
 
   handler.openIframe();
+}
+
+// ============================================================
+// ACCOUNT DROPDOWN & NAVBAR LOGIN STATE
+// ============================================================
+function toggleAccountMenu() {
+  const menu = document.getElementById('accountMenu');
+  if (menu) {
+    menu.style.display = menu.style.display === 'none' || !menu.style.display ? 'block' : 'none';
+  }
+  document.addEventListener('click', function closeMenuOnClickOutside(e) {
+    const dropdown = document.getElementById('accountDropdown');
+    if (dropdown && !dropdown.contains(e.target)) {
+      const menu = document.getElementById('accountMenu');
+      if (menu) menu.style.display = 'none';
+      document.removeEventListener('click', closeMenuOnClickOutside);
+    }
+  });
+}
+
+function logoutUser() {
+  if (window._signOut) {
+    window._signOut(window._auth).then(() => {
+      const menu = document.getElementById('accountMenu');
+      if (menu) menu.style.display = 'none';
+      location.reload();
+    }).catch(err => console.error('Sign out error:', err));
+  }
+}
+
+function showAccountSettings() {
+  alert('Account settings page coming soon!');
+  const menu = document.getElementById('accountMenu');
+  if (menu) menu.style.display = 'none';
+}
+
+function updateNavbarOnLogin(user, tier) {
+  const signInBtn = document.getElementById('signInBtn');
+  const signInBtnMobile = document.getElementById('signInBtnMobile');
+  const accountDropdown = document.getElementById('accountDropdown');
+  const tierBadgeNav = document.getElementById('tierBadgeNav');
+  const menuUserEmail = document.getElementById('menuUserEmail');
+  const menuUserTier = document.getElementById('menuUserTier');
+  const userInitials = document.getElementById('userInitials');
+  
+  if (user) {
+    // Hide sign-in, show account dropdown
+    if (signInBtn) signInBtn.style.display = 'none';
+    if (signInBtnMobile) signInBtnMobile.style.display = 'none';
+    if (accountDropdown) accountDropdown.style.display = 'flex';
+    
+    // Update tier badge styling
+    const tierColors = {
+      'free': { bg: 'rgba(0,229,160,0.15)', border: 'rgba(0,229,160,0.3)', color: 'var(--accent)', label: 'Free' },
+      'starter': { bg: 'rgba(124,92,252,0.15)', border: 'rgba(124,92,252,0.3)', color: 'var(--accent2)', label: 'Starter' },
+      'pro': { bg: 'rgba(255,184,48,0.15)', border: 'rgba(255,184,48,0.3)', color: 'var(--accent4)', label: 'Pro' }
+    };
+    const tierStyle = tierColors[tier] || tierColors['free'];
+    if (tierBadgeNav) {
+      tierBadgeNav.style.display = 'block';
+      tierBadgeNav.textContent = tierStyle.label;
+      tierBadgeNav.style.background = tierStyle.bg;
+      tierBadgeNav.style.borderColor = tierStyle.border;
+      tierBadgeNav.style.color = tierStyle.color;
+    }
+    
+    // Update dropdown menu with user info
+    const email = user.email || 'user@email.com';
+    const initials = email.split('@')[0].slice(0, 2).toUpperCase();
+    if (userInitials) userInitials.textContent = initials;
+    if (menuUserEmail) menuUserEmail.textContent = email;
+    if (menuUserTier) menuUserTier.textContent = 'Tier: ' + tierStyle.label;
+  } else {
+    // Show sign-in, hide dropdown
+    if (signInBtn) signInBtn.style.display = 'block';
+    if (signInBtnMobile) signInBtnMobile.style.display = 'block';
+    if (accountDropdown) accountDropdown.style.display = 'none';
+    if (tierBadgeNav) tierBadgeNav.style.display = 'none';
+  }
 }
 
 // ============================================================
