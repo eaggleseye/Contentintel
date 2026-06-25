@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pricing -- SocialIntel</title>
+<meta name="description" content="SocialIntel pricing -- Free forever, Starter at N6,000/mo, Pro at N14,000/mo. Start free, upgrade when ready." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXX" crossorigin="anonymous"></script>
+<style>
+  :root {
+    --bg:#0a0d12;--bg2:#111520;--bg3:#181d2a;
+    --border:rgba(255,255,255,0.07);
+    --accent:#00e5a0;--accent2:#7c5cfc;--accent3:#ff6b6b;--accent4:#ffb830;
+    --text:#e8eaf0;--text2:#8b90a0;--text3:#555a6a;
+    --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+    --radius:12px;--radius-sm:7px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;}
+  nav{position:sticky;top:0;z-index:100;background:rgba(10,13,18,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 20px;}
+  .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;}
+  .logo{font-family:var(--font-head);font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;}
+  .nav-links{display:flex;align-items:center;gap:24px;}
+  .nav-links a{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);}
+  .nav-cta{background:#fff;border:none;border-radius:8px;color:#333;font-family:var(--font-body);font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;}
+  .page{max-width:900px;margin:0 auto;padding:56px 20px 80px;}
+
+  /* HERO */
+  .pricing-hero{text-align:center;margin-bottom:56px;}
+  .hero-tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);padding:4px 14px;border-radius:99px;margin-bottom:16px;}
+  .pricing-hero h1{font-family:var(--font-head);font-size:clamp(26px,5vw,42px);font-weight:800;line-height:1.15;margin-bottom:12px;}
+  .pricing-hero p{font-size:15px;color:var(--text2);max-width:460px;margin:0 auto;}
+
+  /* CARDS */
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px;}
+  .plan-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;gap:0;position:relative;}
+  .plan-card.popular{border-color:rgba(124,92,252,0.5);background:rgba(124,92,252,0.06);}
+  .popular-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent2);color:#fff;font-size:10px;font-weight:700;padding:3px 14px;border-radius:99px;white-space:nowrap;letter-spacing:0.5px;}
+  .plan-name{font-family:var(--font-head);font-size:16px;font-weight:700;margin-bottom:6px;}
+  .plan-desc{font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.6;}
+  .plan-price{font-family:var(--font-head);font-size:32px;font-weight:800;margin-bottom:4px;}
+  .plan-price span{font-size:13px;font-weight:400;color:var(--text3);}
+  .plan-period{font-size:11px;color:var(--text3);margin-bottom:24px;}
+  .plan-btn{display:block;text-align:center;padding:12px;border-radius:var(--radius-sm);font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:24px;border:none;transition:opacity 0.2s;}
+  .plan-btn:hover{opacity:0.85;}
+  .plan-btn-free{background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+  .plan-btn-starter{background:linear-gradient(135deg,var(--accent),#00b37a);color:#000;}
+  .plan-btn-pro{background:linear-gradient(135deg,var(--accent2),#5a3fd4);color:#fff;}
+  .plan-divider{height:1px;background:var(--border);margin-bottom:20px;}
+  .plan-features{display:flex;flex-direction:column;gap:9px;flex:1;}
+  .feat-row{display:flex;gap:9px;align-items:flex-start;font-size:12px;}
+  .feat-row.yes{color:var(--text2);}
+  .feat-row.no{color:var(--text3);}
+  .feat-icon{flex-shrink:0;font-size:13px;margin-top:1px;}
+
+  /* COMPARISON TABLE */
+  .compare-title{font-family:var(--font-head);font-size:20px;font-weight:800;text-align:center;margin-bottom:24px;}
+  .compare-table{width:100%;border-collapse:collapse;font-size:13px;}
+  .compare-table th{padding:12px 16px;text-align:left;font-family:var(--font-head);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);border-bottom:1px solid var(--border);}
+  .compare-table th:not(:first-child){text-align:center;}
+  .compare-table td{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:var(--text2);}
+  .compare-table td:not(:first-child){text-align:center;}
+  .compare-table tr:hover td{background:rgba(255,255,255,0.02);}
+  .compare-table .section-row td{background:var(--bg3);color:var(--text3);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 16px;}
+  .check-yes{color:var(--accent);font-size:16px;}
+  .check-no{color:var(--text3);font-size:16px;}
+  .check-pro{color:var(--accent2);font-size:11px;font-weight:700;}
+
+  /* FAQ STRIP -->
+  .faq-strip{margin-top:56px;}
+  .faq-strip h2{font-family:var(--font-head);font-size:20px;font-weight:800;margin-bottom:20px;text-align:center;}
+  .faq-mini{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:8px;overflow:hidden;}
+  .faq-mini-q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;cursor:pointer;font-size:13px;font-weight:500;}
+  .faq-mini-q:hover{background:rgba(255,255,255,0.02);}
+  .faq-mini-a{display:none;padding:0 16px 14px;font-size:12px;color:var(--text2);line-height:1.7;}
+  .faq-mini.open .faq-mini-a{display:block;}
+  .faq-mini-arrow{color:var(--text3);font-size:11px;transition:transform 0.2s;flex-shrink:0;}
+  .faq-mini.open .faq-mini-arrow{transform:rotate(180deg);}
+
+  /* CTA */
+  .cta-box{background:linear-gradient(135deg,rgba(124,92,252,0.12),rgba(0,229,160,0.07));border:1px solid rgba(124,92,252,0.25);border-radius:var(--radius);padding:32px;text-align:center;margin-top:56px;}
+  .cta-box h3{font-family:var(--font-head);font-size:22px;font-weight:800;margin-bottom:8px;}
+  .cta-box p{color:var(--text2);font-size:13px;margin-bottom:20px;}
+  .cta-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),#00b37a);color:#000;font-family:var(--font-head);font-size:14px;font-weight:700;padding:12px 28px;border-radius:var(--radius-sm);text-decoration:none;}
+
+  .footer{text-align:center;margin-top:48px;color:var(--text3);font-size:11px;}
+  .footer a{color:var(--text3);text-decoration:none;}
+  .footer a:hover{color:var(--accent);}
+
+  @media(max-width:700px){
+    .nav-links{display:none;}
+    .pricing-grid{grid-template-columns:1fr;}
+    .compare-table{font-size:11px;}
+    .compare-table th,.compare-table td{padding:10px 10px;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">⚡ SocialIntel</a>
+    <div class="nav-links">
+      <a href="pricing.html" class="active">Pricing</a>
+      <a href="faq.html">FAQ</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="index.html"><button class="nav-cta">Get started free</button></a>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- HERO -->
+  <div class="pricing-hero">
+    <div class="hero-tag">Pricing</div>
+    <h1>Start free.<br>Upgrade when you're ready.</h1>
+    <p>No hidden fees. No credit card needed to start. Cancel anytime.</p>
+  </div>
+
+  <!-- PLAN CARDS -->
+  <div class="pricing-grid">
+
+    <!-- FREE -->
+    <div class="plan-card">
+      <div class="plan-name">🆓 Free</div>
+      <div class="plan-desc">Perfect for trying out SocialIntel and exploring Reddit intelligence.</div>
+      <div class="plan-price">₦0</div>
+      <div class="plan-period">Forever free</div>
+      <a href="index.html" class="plan-btn plan-btn-free">Get started free</a>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Reddit scanning</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>3 scans per day</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>25 posts per scan</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>All 6 analysis tabs</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Trending, Demand Gaps, Weak Signals</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No export</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No location filter</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No YouTube / TikTok / IG / FB</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No Content Ideas generator</div>
+      </div>
+    </div>
+
+    <!-- STARTER -->
+    <div class="plan-card">
+      <div class="plan-name">⚡ Starter</div>
+      <div class="plan-desc">For creators and marketers ready to go deeper with more platforms and scans.</div>
+      <div class="plan-price" style="color:var(--accent)">₦6,000<span>/mo</span></div>
+      <div class="plan-period">Billed monthly, cancel anytime</div>
+      <a href="index.html" class="plan-btn plan-btn-starter">Start Starter</a>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Reddit + X (Twitter)</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>10 scans per day</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>50 posts per scan</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>All 6 analysis tabs</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Export to Markdown</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Location filter</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No YouTube / TikTok / IG / FB</div>
+        <div class="feat-row no"><span class="feat-icon">✗</span>No Content Ideas generator</div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="plan-card popular">
+      <div class="popular-badge">MOST POPULAR</div>
+      <div class="plan-name">🔥 Pro</div>
+      <div class="plan-desc">For serious creators and businesses who want every competitive advantage.</div>
+      <div class="plan-price" style="color:var(--accent2)">₦14,000<span>/mo</span></div>
+      <div class="plan-period">Billed monthly, cancel anytime</div>
+      <a href="index.html" class="plan-btn plan-btn-pro">Go Pro</a>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="feat-row yes"><span class="feat-icon">✓</span>All 6 platforms</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Unlimited scans</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>100 posts per scan</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>All 6 analysis tabs</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Export to Markdown</div>
+        <div class="feat-row yes"><span class="feat-icon">✓</span>Location filter</div>
+        <div class="feat-row yes"><span class="feat-icon" style="color:var(--accent2)">✓</span><span style="color:var(--accent2);font-weight:600;">Content Ideas generator</span></div>
+        <div class="feat-row yes"><span class="feat-icon" style="color:var(--accent2)">✓</span><span style="color:var(--accent2);font-weight:600;">5-day content calendar</span></div>
+        <div class="feat-row yes"><span class="feat-icon" style="color:var(--accent2)">✓</span><span style="color:var(--accent2);font-weight:600;">Priority new features</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="compare-title">Full feature comparison</div>
+  <div style="overflow-x:auto;margin-bottom:56px;">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Free</th>
+          <th style="color:var(--accent)">Starter</th>
+          <th style="color:var(--accent2)">Pro</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="section-row"><td colspan="4">Platforms</td></tr>
+        <tr><td>Reddit</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>X (Twitter)</td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>YouTube</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>TikTok</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Instagram</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Facebook</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr class="section-row"><td colspan="4">Scanning Limits</td></tr>
+        <tr><td>Scans per day</td><td>3</td><td>10</td><td>Unlimited</td></tr>
+        <tr><td>Posts per scan</td><td>25</td><td>50</td><td>100</td></tr>
+        <tr><td>Timeframe filter</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Location filter</td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr class="section-row"><td colspan="4">Analysis Tabs</td></tr>
+        <tr><td>Trending Themes</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Hot Tickers</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>How-tos</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Weak Signals</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Unspoken Fears</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Demand Gaps</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr class="section-row"><td colspan="4">Content Tools</td></tr>
+        <tr><td>Export to Markdown</td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Content Ideas generator</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-pro">PRO</span></td></tr>
+        <tr><td>5-day content calendar</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-pro">PRO</span></td></tr>
+        <tr><td>Hooks + captions generator</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-pro">PRO</span></td></tr>
+        <tr><td>60-second video script</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-pro">PRO</span></td></tr>
+        <tr class="section-row"><td colspan="4">Support</td></tr>
+        <tr><td>Email support</td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td><td><span class="check-yes">✓</span></td></tr>
+        <tr><td>Priority features</td><td><span class="check-no">✗</span></td><td><span class="check-no">✗</span></td><td><span class="check-yes">✓</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MINI FAQ -->
+  <div class="faq-strip">
+    <h2>Pricing questions</h2>
+    <div class="faq-mini" onclick="toggleMini(this)">
+      <div class="faq-mini-q">Can I cancel anytime? <span class="faq-mini-arrow">▼</span></div>
+      <div class="faq-mini-a">Yes. Cancel at any time with no fees. Your plan stays active until the end of the billing period, then you drop back to Free automatically.</div>
+    </div>
+    <div class="faq-mini" onclick="toggleMini(this)">
+      <div class="faq-mini-q">What payment methods do you accept? <span class="faq-mini-arrow">▼</span></div>
+      <div class="faq-mini-a">We use Paystack, which accepts Nigerian debit cards, Mastercard, Visa, bank transfers and USSD. All prices are in Naira (NGN).</div>
+    </div>
+    <div class="faq-mini" onclick="toggleMini(this)">
+      <div class="faq-mini-q">Do you offer refunds? <span class="faq-mini-arrow">▼</span></div>
+      <div class="faq-mini-a">Yes, within 48 hours of payment if you have used fewer than 5 scans. Contact us to request one.</div>
+    </div>
+    <div class="faq-mini" onclick="toggleMini(this)">
+      <div class="faq-mini-q">Can I upgrade or downgrade my plan? <span class="faq-mini-arrow">▼</span></div>
+      <div class="faq-mini-a">Upgrades apply immediately. Downgrades take effect at the start of your next billing cycle.</div>
+    </div>
+    <div style="text-align:center;margin-top:16px;">
+      <a href="faq.html" style="color:var(--accent2);font-size:13px;text-decoration:none;">See all FAQs →</a>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <h3>Ready to post with purpose?</h3>
+    <p>Join creators and marketers already using SocialIntel.</p>
+    <a href="index.html" class="cta-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Start for free with Google
+    </a>
+  </div>
+
+  <div class="footer" style="margin-top:40px;">
+    Powered by SocialIntel AI &nbsp;.&nbsp; © 2026 SocialIntel. All rights reserved.
+    &nbsp;.&nbsp; <a href="about.html">About</a>
+    &nbsp;.&nbsp; <a href="faq.html">FAQ</a>
+    &nbsp;.&nbsp; <a href="contact.html">Contact</a>
+  </div>
+
+</div>
+
+<script>
+function toggleMini(item) {
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-mini.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>
