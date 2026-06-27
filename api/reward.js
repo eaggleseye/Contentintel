@@ -3,26 +3,15 @@
  * 
  * Serverless function to verify ad completion and grant Pro access
  * Called by frontend after user watches ad + clicks X
- * 
- * Verifies:
- * - User identity (Firebase ID token)
- * - Daily ad limit (max 2 ads per day)
- * - Prevents localStorage manipulation
- * 
- * Updates Firestore with:
- * - Ad watch record
- * - New Pro expiry date
- * 
- * Returns: { success, proExpiresAt, message }
  */
 
 const admin = require('firebase-admin');
 
-// Initialize Firebase Admin (uses FIREBASE_SERVICE_ACCOUNT env var on Vercel)
+// Initialize Firebase Admin using service account from Vercel env var
 if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
-    projectId: process.env.FIREBASE_PROJECT_ID || 'socialintel-f7c23',
-    // Credentials come from Vercel environment variables
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
@@ -51,9 +40,7 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Missing idToken' });
     }
 
-    // ========================================
     // 1. VERIFY FIREBASE ID TOKEN
-    // ========================================
     let decodedToken;
     try {
       decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -65,14 +52,11 @@ module.exports = async (req, res) => {
     const userId = decodedToken.uid;
     const userEmail = decodedToken.email;
 
-    // ========================================
     // 2. CHECK DAILY AD LIMIT (max 2 per day)
-    // ========================================
     const userRef = db.collection('users').doc(userId);
     const userDoc = await userRef.get();
     
     if (!userDoc.exists) {
-      // Create user doc if doesn't exist
       await userRef.set({
         email: userEmail,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -92,7 +76,7 @@ module.exports = async (req, res) => {
       adsWatchedToday = 0;
     }
 
-    // Check if user exceeded daily limit
+    // Check daily limit
     if (adsWatchedToday >= 2) {
       return res.status(429).json({
         error: 'Daily ad limit reached',
@@ -101,40 +85,30 @@ module.exports = async (req, res) => {
       });
     }
 
-    // ========================================
     // 3. CALCULATE NEW PRO EXPIRY
-    // ========================================
     const now = new Date();
     const currentProExpiry = userData.proExpiresAt ? new Date(userData.proExpiresAt) : null;
-
-    // If Pro is still active, extend from current expiry; otherwise start from now
     const baseTime = currentProExpiry && currentProExpiry > now ? currentProExpiry : now;
-    const newProExpiry = new Date(baseTime.getTime() + 30 * 60 * 1000); // Add 30 minutes
+    const newProExpiry = new Date(baseTime.getTime() + 30 * 60 * 1000);
 
-    // ========================================
     // 4. UPDATE FIRESTORE
-    // ========================================
     await userRef.update({
       adsWatchedToday: adsWatchedToday + 1,
       lastAdDate: today,
       proExpiresAt: newProExpiry.toISOString(),
       lastAdWatchedAt: admin.firestore.FieldValue.serverTimestamp(),
-      // Keep track of all ad watches for analytics
       adWatchHistory: admin.firestore.FieldValue.arrayUnion({
-        watchedAt: admin.firestore.FieldValue.serverTimestamp(),
+        watchedAt: new Date().toISOString(),
         proGrantedUntil: newProExpiry.toISOString(),
       }),
     });
 
-    // ========================================
-    // 5. RETURN SUCCESS RESPONSE
-    // ========================================
+    // 5. RETURN SUCCESS
     return res.status(200).json({
       success: true,
       message: 'Pro access granted for 30 minutes',
       proExpiresAt: newProExpiry.toISOString(),
       adsWatchedToday: adsWatchedToday + 1,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     });
 
   } catch (error) {
