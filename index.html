@@ -1924,10 +1924,33 @@ function toggleSiNav() {
 }
 
 async function signInGoogle() {
+  // Firebase module may still be loading — poll until ready
+  if (!window._signInWithPopup || !window._auth || !window._provider) {
+    let waited = 0;
+    await new Promise((resolve, reject) => {
+      const check = setInterval(() => {
+        waited += 100;
+        if (window._signInWithPopup && window._auth && window._provider) {
+          clearInterval(check);
+          resolve();
+        }
+        if (waited > 8000) {
+          clearInterval(check);
+          reject(new Error('Firebase took too long to load. Please refresh and try again.'));
+        }
+      }, 100);
+    });
+  }
   try {
     await window._signInWithPopup(window._auth, window._provider);
   } catch(e) {
-    alert('Sign in failed: ' + e.message);
+    if (e.code === 'auth/popup-blocked') {
+      alert('Popup was blocked by your browser. Please allow popups for this site and try again.');
+    } else if (e.code === 'auth/popup-closed-by-user') {
+      // user closed the popup — do nothing
+    } else {
+      alert('Sign in failed: ' + e.message);
+    }
   }
 }
 
