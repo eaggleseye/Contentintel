@@ -4192,8 +4192,31 @@ const ONBOARD_TOPIC_SUGGESTIONS = [
   'Health & fitness','Personal finance','Startups','Sports'
 ];
 
-function shouldShowOnboarding() {
-  return !localStorage.getItem(ONBOARD_KEY);
+async function shouldShowOnboarding() {
+  // Only show onboarding for brand new users (created within last 5 minutes)
+  if (!window._currentUser) return false;
+  
+  try {
+    const userRef = window._doc(window._db, 'users', window._currentUser.uid);
+    const snap = await window._getDoc(userRef);
+    const userData = snap.data() || {};
+    
+    // If already completed onboarding, don't show again
+    if (userData.onboardingCompleted) {
+      localStorage.setItem(ONBOARD_KEY, '1');
+      return false;
+    }
+    
+    // Only show if account is brand new (created less than 5 minutes ago)
+    const createdAt = userData.createdAt ? new Date(userData.createdAt) : null;
+    if (!createdAt) return false;
+    
+    const ageMinutes = (new Date() - createdAt) / 1000 / 60;
+    return ageMinutes < 5; // Only for fresh signups
+  } catch (e) {
+    console.log('Onboarding check error:', e);
+    return false;
+  }
 }
 
 function startOnboarding() {
@@ -4288,6 +4311,13 @@ function skipOnboarding() {
 
 function finishOnboarding() {
   localStorage.setItem(ONBOARD_KEY, '1');
+  
+  // Save to Firebase so onboarding doesn't show on other devices
+  if (window._currentUser && window._db) {
+    const userRef = window._doc(window._db, 'users', window._currentUser.uid);
+    window._setDoc(userRef, { onboardingCompleted: true }, { merge: true }).catch(e => console.log('Save error:', e));
+  }
+  
   document.getElementById('onboardOverlay').style.display = 'none';
   // Apply selected topics
   selectedTopics = new Set(onboardData.topics);
