@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog - ContentIntel</title>
+  <meta name="description" content="Free content creation guides. Learn video production, social media strategy, storytelling, equipment reviews, and monetization techniques." />
+  <meta name="keywords" content="content creation, video production, social media strategy, content creator tips, equipment guides" />
+  <meta name="author" content="ContentIntel" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Blog - ContentIntel" />
+  <meta property="og:description" content="Free guides for content creators. Master video production, social media, storytelling, and monetization." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://contentintel-xi.vercel.app/blog.html" />
+  <meta property="og:image" content="https://contentintel-xi.vercel.app/preview.png" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog - ContentIntel" />
+  <meta name="twitter:description" content="Free content creation guides for creators." />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://contentintel-xi.vercel.app/blog.html" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #0a0e27;
+      --bg2: #131829;
+      --bg3: #1a1f3a;
+      --text: #ffffff;
+      --text2: rgba(255,255,255,0.85);
+      --text3: rgba(255,255,255,0.6);
+      --accent: #00e5a0;
+      --accent2: #00c4ff;
+      --border: rgba(0,229,160,0.2);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    /* NAVBAR */
+    .si-nav {
+      background: rgba(10, 14, 39, 0.9);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+    }
+
+    .si-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .si-nav-logo { font-weight: 800; font-size: 16px; color: var(--accent); }
+    .si-nav-links { display: flex; gap: 20px; }
+    .si-nav-links a { color: var(--text3); text-decoration: none; font-size: 12px; transition: all 0.2s; }
+    .si-nav-links a:hover { color: var(--accent); }
+
+    @media(max-width: 768px) {
+      .si-nav-links { display: none; }
+      .hamburger-btn { display: flex !important; }
+    }
+
+    /* HAMBURGER MENU */
+    .hamburger-btn {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: none;
+      border: 1px solid rgba(0, 229, 160, 0.3);
+      color: #00e5a0;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+      gap: 4px;
+    }
+
+    .hamburger-btn:hover {
+      background: rgba(0, 229, 160, 0.1);
+      border-color: rgba(0, 229, 160, 0.6);
+    }
+
+    .hamburger-btn span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: #00e5a0;
+      border-radius: 1px;
+      transition: all 0.3s;
+    }
+
+    .hamburger-menu {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.95);
+      border: 1px solid rgba(0, 229, 160, 0.3);
+      border-radius: 8px;
+      min-width: 150px;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .hamburger-menu.active { display: flex; flex-direction: column; }
+    .hamburger-menu a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(0, 229, 160, 0.1);
+      transition: all 0.2s;
+      font-size: 14px;
+      cursor: pointer;
+      display: block;
+    }
+
+    .hamburger-menu a:last-child { border-bottom: none; }
+    .hamburger-menu a:hover { background: rgba(0, 229, 160, 0.1); color: #00e5a0; }
+
+    /* HERO */
+    .blog-hero {
+      background: linear-gradient(135deg, rgba(0,229,160,0.1), rgba(0,196,255,0.05));
+      border-bottom: 1px solid var(--border);
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .blog-hero h1 {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .blog-hero p {
+      color: var(--text3);
+      font-size: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* CONTENT */
+    .blog-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* BLOG GRID */
+    .blog-grid {
+      display: grid;
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    .blog-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .blog-card:hover {
+      background: var(--bg3);
+      border-color: var(--accent);
+    }
+
+    .blog-card-tag {
+      display: inline-block;
+      background: rgba(0,229,160,0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .blog-card h3 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .blog-card p {
+      color: var(--text3);
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .blog-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .read-more:hover { color: var(--accent2); }
+
+    /* ARTICLE PAGE */
+    .article-content {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .article-header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 30px;
+    }
+
+    .article-tag {
+      display: inline-block;
+      background: rgba(0,229,160,0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .article-header h1 {
+      font-family: var(--font-head);
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .article-meta {
+      font-size: 12px;
+      color: var(--text3);
+      display: flex;
+      gap: 16px;
+    }
+
+    .article-body {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text2);
+    }
+
+    .article-body h2 {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 700;
+      margin: 32px 0 16px;
+      color: var(--text);
+    }
+
+    .article-body h3 {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      margin: 20px 0 10px;
+      color: var(--text);
+    }
+
+    .article-body p {
+      margin-bottom: 16px;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 16px 0 16px 24px;
+    }
+
+    .article-body li {
+      margin-bottom: 12px;
+      line-height: 1.6;
+    }
+
+    .tip-box {
+      background: rgba(0,229,160,0.05);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      margin: 20px 0;
+    }
+
+    .tip-box strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* AD PLACEMENT */
+    .ad-placeholder {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin: 40px 0;
+    }
+
+    .ad-placeholder-text {
+      font-size: 12px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* CTA SECTION */
+    .article-cta {
+      background: linear-gradient(135deg, rgba(124,92,252,0.12), rgba(0,229,160,0.07));
+      border: 1px solid rgba(124,92,252,0.25);
+      border-radius: var(--radius);
+      padding: 28px;
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .article-cta h3 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .article-cta p {
+      color: var(--text3);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, rgba(0,229,160,0.3), rgba(0,229,160,0.1));
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+
+    .cta-btn:hover {
+      background: rgba(0,229,160,0.2);
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    /* FOOTER */
+    .app-footer {
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 1px solid rgba(0, 229, 160, 0.2);
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto 30px;
+    }
+
+    .footer-section h4 {
+      color: #00e5a0;
+      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 8px;
+    }
+
+    .footer-section ul li a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .footer-section ul li a:hover {
+      color: #00e5a0;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 229, 160, 0.1);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    @media(max-width: 640px) {
+      .blog-hero h1 { font-size: 24px; }
+      .blog-card { padding: 20px; }
+      .article-header h1 { font-size: 22px; }
+      .article-body { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="si-nav">
+  <div class="si-nav-inner">
+    <div class="si-nav-logo">⚡ ContentIntel</div>
+    <div class="si-nav-links">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <button class="hamburger-btn" onclick="document.getElementById('hamburgerMenu').classList.toggle('active')">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="hamburgerMenu" class="hamburger-menu">
+      <a href="index.html">Home</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="blog.html">Blog</a>
+      <a href="faq.html">FAQ</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="blog-hero">
+  <h1>Content Creator's Handbook</h1>
+  <p>Free in-depth guides on video production, social media strategy, equipment, monetization, and more. Master the skills that top creators use.</p>
+</div>
+
+<!-- BLOG GRID -->
+<div class="blog-container">
+  <div class="blog-grid" id="blogGrid"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>⚡ ContentIntel</h4>
+      <p style="font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.6);">Know what your audience wants before they do.</p>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="legal.html">Privacy & Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2026 ContentIntel. All rights reserved. | Powered by ContentIntel AI</p>
+  </div>
+</footer>
+
+<script>
+// Blog articles data
+const articles = [
+  {
+    id: 1,
+    title: "The Complete Guide to Video Production for Content Creators",
+    category: "Video Production",
+    excerpt: "Learn essential video production techniques, from planning to editing. Master framing, lighting, audio, and post-production to create professional-quality content.",
+    readTime: "12 min",
+    date: "June 28, 2026"
+  },
+  {
+    id: 2,
+    title: "Social Media Strategy That Actually Works: From Algorithm to Audience",
+    category: "Social Strategy",
+    excerpt: "Understand how social media algorithms work and develop a content strategy that reaches your target audience. Learn platform-specific tactics for growth.",
+    readTime: "10 min",
+    date: "June 26, 2026"
+  },
+  {
+    id: 3,
+    title: "Master Storytelling: How to Craft Content That Resonates",
+    category: "Storytelling",
+    excerpt: "Discover the narrative structures top creators use to engage audiences emotionally. Learn story arcs, hooks, and techniques that keep viewers watching.",
+    readTime: "11 min",
+    date: "June 24, 2026"
+  },
+  {
+    id: 4,
+    title: "Content Planning 101: Build a Calendar That Works",
+    category: "Strategy",
+    excerpt: "Create a sustainable content calendar aligned with your audience's needs. Learn batching, scheduling strategies, and how to stay consistent.",
+    readTime: "9 min",
+    date: "June 22, 2026"
+  },
+  {
+    id: 5,
+    title: "Equipment Buyer's Guide: Cameras, Lights, and Mics for Every Budget",
+    category: "Equipment",
+    excerpt: "Compare essential equipment for content creators. Get detailed recommendations for cameras, lighting, microphones, tripods, and lenses at every price point.",
+    readTime: "13 min",
+    date: "June 20, 2026"
+  },
+  {
+    id: 6,
+    title: "Grow Your Audience: 7 Proven Tactics Top Creators Use",
+    category: "Growth",
+    excerpt: "Go beyond vanity metrics. Learn audience growth strategies based on engagement, community building, and authentic connection with your viewers.",
+    readTime: "10 min",
+    date: "June 18, 2026"
+  },
+  {
+    id: 7,
+    title: "Monetization Strategies: How to Make Real Money as a Creator",
+    category: "Monetization",
+    excerpt: "Explore multiple income streams: ads, sponsorships, digital products, and memberships. Build sustainable revenue from your content.",
+    readTime: "11 min",
+    date: "June 16, 2026"
+  },
+  {
+    id: 8,
+    title: "Lighting for Content Creators: A Technical and Creative Masterclass",
+    category: "Equipment",
+    excerpt: "Master three-point lighting, color temperature, and advanced techniques. Learn how professional lighting transforms your production quality.",
+    readTime: "10 min",
+    date: "June 14, 2026"
+  },
+  {
+    id: 9,
+    title: "Audio is Everything: Why Sound Quality Matters More Than You Think",
+    category: "Technical",
+    excerpt: "Invest in audio first. Learn about microphone types, room treatment, audio mixing, and why creators often overlook this critical element.",
+    readTime: "9 min",
+    date: "June 12, 2026"
+  },
+  {
+    id: 10,
+    title: "Analytics That Matter: Metrics Every Creator Should Track",
+    category: "Data",
+    excerpt: "Stop obsessing over follower counts. Learn which metrics actually matter for growth and how to use data to improve your content strategy.",
+    readTime: "8 min",
+    date: "June 10, 2026"
+  }
+];
+
+// Render blog grid
+function renderBlogGrid() {
+  const grid = document.getElementById('blogGrid');
+  grid.innerHTML = articles.map(article => `
+    <div class="blog-card" onclick="viewArticle(${article.id})">
+      <div class="blog-card-tag">${article.category}</div>
+      <h3>${article.title}</h3>
+      <p>${article.excerpt}</p>
+      <div class="blog-card-meta">
+        <span>${article.date} • ${article.readTime} read</span>
+        <a href="#" class="read-more" onclick="viewArticle(${article.id}); return false">Read →</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// View full article
+function viewArticle(id) {
+  // For now, show an alert
+  // Later, we can create individual article pages or use a modal
+  alert(`Article ${id} - Coming soon with full content, ads, and related articles!`);
+}
+
+// Hamburger menu click outside
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('hamburgerMenu');
+  const btn = document.querySelector('.hamburger-btn');
+  if (menu && btn && !e.target.closest('.hamburger-btn') && !e.target.closest('.hamburger-menu')) {
+    menu.classList.remove('active');
+  }
+});
+
+// Initialize
+try {
+  renderBlogGrid();
+} catch(err) {
+  console.error('Blog rendering error:', err);
+}
+
+</script>
+
+</body>
+</html>
