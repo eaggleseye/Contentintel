@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Complete Guide to Video Production for Content Creators | ContentIntel Blog</title>
+  <meta name="description" content="Master professional video production techniques. Learn framing, lighting, audio, post-production, and storytelling to create content that stands out." />
+  <meta name="keywords" content="video production, content creation, filming tips, video editing, cinematography, content creators" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="The Complete Guide to Video Production for Content Creators" />
+  <meta property="og:description" content="Learn professional video production techniques from planning to editing." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://contentintel-xi.vercel.app/article-1.html" />
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E523Y1SBNP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E523Y1SBNP');
+  </script>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2930782246675591" crossorigin="anonymous"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #0a0e27;
+      --bg2: #131829;
+      --bg3: #1a1f3a;
+      --text: #ffffff;
+      --text2: rgba(255,255,255,0.85);
+      --text3: rgba(255,255,255,0.6);
+      --accent: #00e5a0;
+      --accent2: #00c4ff;
+      --border: rgba(0,229,160,0.2);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --radius: 12px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    /* NAVBAR */
+    .si-nav {
+      background: rgba(10, 14, 39, 0.9);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      padding: 12px 20px;
+    }
+
+    .si-nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .si-nav-logo { font-weight: 800; font-size: 16px; color: var(--accent); }
+    .si-nav-links { display: flex; gap: 20px; }
+    .si-nav-links a { color: var(--text3); text-decoration: none; font-size: 12px; transition: all 0.2s; }
+    .si-nav-links a:hover { color: var(--accent); }
+
+    @media(max-width: 768px) {
+      .si-nav-links { display: none; }
+    }
+
+    /* ARTICLE CONTAINER */
+    .article-container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    .article-header {
+      margin-bottom: 40px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-tag {
+      display: inline-block;
+      background: rgba(0,229,160,0.1);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .article-title {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .article-meta {
+      font-size: 12px;
+      color: var(--text3);
+      display: flex;
+      gap: 16px;
+    }
+
+    .article-body {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text2);
+    }
+
+    .article-body h2 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 700;
+      margin: 40px 0 16px;
+      color: var(--text);
+    }
+
+    .article-body h3 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 700;
+      margin: 24px 0 12px;
+      color: var(--text);
+    }
+
+    .article-body p {
+      margin-bottom: 16px;
+    }
+
+    .article-body ul, .article-body ol {
+      margin: 16px 0 16px 24px;
+    }
+
+    .article-body li {
+      margin-bottom: 12px;
+    }
+
+    .tip-box {
+      background: rgba(0,229,160,0.05);
+      border-left: 4px solid var(--accent);
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .tip-box strong {
+      color: var(--accent);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    /* AD PLACEMENT */
+    .ad-container {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      margin: 40px 0;
+    }
+
+    .ad-label {
+      font-size: 12px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      background: rgba(0, 0, 0, 0.4);
+      border-top: 1px solid rgba(0, 229, 160, 0.2);
+      padding: 40px 20px 20px;
+      margin-top: 60px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto 30px;
+    }
+
+    .footer-section h4 {
+      color: #00e5a0;
+      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 8px;
+    }
+
+    .footer-section ul li a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+
+    .footer-section ul li a:hover {
+      color: #00e5a0;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(0, 229, 160, 0.1);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.5);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .article-nav {
+      display: flex;
+      justify-content: space-between;
+      margin: 40px 0;
+      padding: 20px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .article-nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .article-nav a:hover {
+      color: var(--accent2);
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="si-nav">
+  <div class="si-nav-inner">
+    <div class="si-nav-logo">⚡ ContentIntel</div>
+    <div class="si-nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../about.html">About</a>
+      <a href="../contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ARTICLE -->
+<div class="article-container">
+  <div class="article-header">
+    <span class="article-tag">Video Production</span>
+    <h1 class="article-title">The Complete Guide to Video Production for Content Creators</h1>
+    <div class="article-meta">
+      <span>June 28, 2026</span>
+      <span>12 min read</span>
+    </div>
+  </div>
+
+  <div class="article-body">
+    <p>Video content dominates social media. From TikTok to YouTube, Instagram Reels to Facebook Stories, creators who master video production have a massive competitive advantage. But professional-quality video doesn't require expensive equipment or years of film school—it requires understanding fundamental principles and practicing consistently.</p>
+
+    <p>In this guide, we'll cover everything from pre-production planning to final editing. Whether you're filming on a phone or a cinema camera, these principles will help you create content that stops the scroll and keeps viewers engaged.</p>
+
+    <p>By the end of this guide, you'll understand how to plan, shoot, and edit video content that looks polished, feels authentic, and resonates with your audience. Let's dive in.</p>
+
+    <!-- AD AFTER 3 PARAGRAPHS -->
+    <div class="ad-container">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-2930782246675591"
+           data-ad-slot="5540698330"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <h2>Part 1: Pre-Production Planning</h2>
+
+    <p>The difference between mediocre and exceptional video content often comes down to planning. Professional creators spend 50% of their time in pre-production, before they ever touch a camera. This is where you define your vision, script your message, and plan every shot.</p>
+
+    <h3>Start With Your Story</h3>
+    <p>Every great video begins with a compelling story. Not every video needs a narrative arc, but every video needs a purpose. Before you film anything, ask yourself: What is the point of this video? What do I want my viewers to feel, think, or do after watching?</p>
+
+    <p>Your story should have three clear sections: the hook (grab attention in the first 3 seconds), the body (deliver your value or entertainment), and the call-to-action (tell viewers what to do next). Write this down. Make it specific. Generic videos get scrolled past.</p>
+
+    <p>For example, if you're making a "how-to" video about product photography, your hook might be "Most creators waste $500 on lighting when they could use this $50 trick." Your body shows the actual technique. Your CTA asks viewers to try it and tag you in their results.</p>
+
+    <!-- AD AFTER 3 PARAGRAPHS -->
+    <div class="ad-container">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-2930782246675591"
+           data-ad-slot="5308764045"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <h3>Script Your Key Points</h3>
+    <p>You don't need a word-for-word script, but you should have an outline. List the key points you want to communicate in order. If you're doing voice-over, write that out word-for-word. Spoken word is harder to edit than visual content—getting it right in-camera saves enormous editing time.</p>
+
+    <p>For on-camera talking head content, practice your lines until you can deliver them naturally without reading. The best performances look casual, but casual takes preparation. Record yourself a few times, watch it back, and refine until you sound like yourself, not a robot.</p>
+
+    <h3>Plan Your Shots</h3>
+    <p>Write a shot list. For each scene or section of your video, list the shots you need: wide shots, close-ups, b-roll, graphics, text overlays. A detailed shot list keeps you focused and ensures you don't miss anything on set.</p>
+
+    <div class="tip-box">
+      <strong>Pro Tip:</strong> Create a mood board. Find 3-5 reference videos you admire. Study their framing, pacing, color grading, music. Identify specific techniques and recreate them in your own work. This accelerates your learning dramatically.
+    </div>
+
+    <h2>Part 2: Lighting Fundamentals</h2>
+
+    <p>Lighting is where amateur video becomes professional video. Bad lighting makes expensive cameras look cheap. Good lighting makes phone cameras look expensive. Master this, and everything else is secondary.</p>
+
+    <h3>The Three-Point Lighting Setup</h3>
+    <p>Professional lighting uses three lights: key light, fill light, and back light. The key light (your main light) is positioned 45 degrees to one side of your subject. It creates dimension and shadows. The fill light reduces harsh shadows without eliminating them entirely. The back light separates your subject from the background, creating depth and visual interest.</p>
+
+    <p>You don't need three separate fixtures. A single bright window can be your key light. A white poster board can bounce light back as a fill. A lamp behind your subject becomes a back light. Start simple and add equipment only when you understand why you need it.</p>
+
+    <h3>Color Temperature Matters</h3>
+    <p>Light comes in different colors. Warm light (tungsten/incandescent) is around 3200K. Daylight is around 5600K. If you mix these in one shot without correcting, your video will look unprofessional. Either keep all your lights the same temperature, or use color correction in post-production.</p>
+
+    <!-- AD AFTER 3 PARAGRAPHS -->
+    <div class="ad-container">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-2930782246675591"
+           data-ad-slot="9859512448"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <h2>Part 3: Camera and Framing</h2>
+
+    <p>The camera is just a tool. A $4,000 cinema camera and a $800 smartphone can both create compelling content if you know how to use them. What matters is understanding composition and movement.</p>
+
+    <h3>Composition Rules</h3>
+    <p>The rule of thirds divides your frame into nine equal sections (3x3 grid). Place your subject on one of the intersecting lines rather than dead center. This creates visual balance and draws the eye naturally through the frame. Most camera phones have a grid overlay option—use it.</p>
+
+    <p>Leading lines guide the viewer's eye through the frame. A road disappearing into the distance, a fence line, a person's gaze—all lead the viewer where you want them to look. Negative space gives your subject room to move or look into. Avoid centering everything and cramping your subject against the frame edge.</p>
+
+    <h3>Camera Movement</h3>
+    <p>Static shots are powerful, but thoughtful camera movement adds production value. The key word is "thoughtful"—every movement should serve the story. Never move the camera just to move it. Motivated movement includes:</p>
+
+    <ul>
+      <li><strong>Pan:</strong> Horizontal camera movement (left to right or vice versa)</li>
+      <li><strong>Tilt:</strong> Vertical camera movement (up or down)</li>
+      <li><strong>Dolly/Slide:</strong> Moving the camera toward or away from the subject</li>
+      <li><strong>Handheld:</strong> Intentional camera shake for energy and urgency</li>
+    </ul>
+
+    <p>Slow, smooth movements feel cinematic. Fast movements feel chaotic. Match your movement speed to the mood of your content. Use a tripod, slider, or gimbal to achieve smooth camera movement. Handheld footage shot without stabilization reads as amateurish.</p>
+
+    <h2>Part 4: Audio Production</h2>
+
+    <p>Here's a hard truth: viewers will tolerate mediocre video if the audio is good. They will not tolerate great video with bad audio. Audio is 50% of the experience. Invest here.</p>
+
+    <h3>Microphone Selection</h3>
+    <p>For on-camera talent, a lavalier microphone (lapel mic) placed 6 inches from your mouth captures clean, direct sound. For interview setups, a larger condenser mic on a boom pole works well. For voiceover, any reasonably quiet room and a standard USB microphone will do—what matters is distance (6-12 inches away) and consistency.</p>
+
+    <p>Phone microphones and camera built-in mics are last resorts. They pick up everything—wind, room noise, camera clicks. A $30 lavalier mic connected to your phone will transform your audio quality.</p>
+
+    <h3>Audio Environment</h3>
+    <p>Hard surfaces reflect sound and create echo. Carpet, curtains, blankets, and foam panels absorb sound and reduce reflections. The best audio setup isn't expensive—it's intentional. Record in a smaller room with soft materials rather than a cavernous space with hard walls.</p>
+
+    <!-- AD AFTER 3 PARAGRAPHS -->
+    <div class="ad-container">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-2930782246675591"
+           data-ad-slot="8052818204"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+
+    <h2>Part 5: Post-Production and Editing</h2>
+
+    <p>Editing is where raw footage becomes a story. A poorly shot video can be saved with good editing. A boring story can't. But good editing absolutely matters for pacing, flow, and engagement.</p>
+
+    <h3>Editing Workflow</h3>
+    <p>Import all your footage. Organize clips by scene or shot type. Create a rough cut by laying down all your b-roll and narration in sequence. Don't worry about polish yet—just establish the structure and timing. Once you have a rough assembly, refine it. Trim unnecessary moments. Tighten pacing. Add transitions and effects.</p>
+
+    <p>Color correction comes next. Adjust exposure, contrast, and saturation to match across all clips. Color grading adds mood and style. A warm, golden grade feels nostalgic or romantic. Cool, desaturated grades feel ominous or professional. Consistent color grading throughout your video is what separates amateur from professional.</p>
+
+    <h3>Pacing and Music</h3>
+    <p>Music drives pacing. If your music is fast and energetic, your cuts should be quick. If your music is slow and contemplative, your shots can breathe. The relationship between audio and visuals creates emotion. Mismatch them intentionally to create tension, or match them perfectly for satisfaction.</p>
+
+    <p>Silence is powerful. Not every moment needs music. Let important dialogue or moments sit in near-silence to emphasize them. This contrast makes the musical moments hit harder when they arrive.</p>
+
+    <h2>Conclusion: Start Practicing Today</h2>
+
+    <p>Video production is a skill. Skills improve with practice. You won't create your best work on your first day—you'll create your best work after 100 days of practice. The difference between good and great isn't talent, it's reps.</p>
+
+    <p>Start with the tools and space you have right now. Shoot with your phone. Use natural window light. Record audio on a cheap mic. Edit on free software. As you improve, upgrade individual elements. Each upgrade compounds on your existing skills.</p>
+
+    <p>The creators winning right now aren't the ones waiting for perfect equipment. They're the ones creating consistently with imperfect tools. Join them.</p>
+
+    <div class="article-nav">
+      <a href="../blog.html">← Back to Blog</a>
+      <a href="article-2.html">Next Article →</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>⚡ ContentIntel</h4>
+      <p style="font-size: 13px; line-height: 1.6; color: rgba(255, 255, 255, 0.6);">Know what your audience wants before they do.</p>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="../blog.html">Blog</a></li>
+        <li><a href="shop.html">Shop</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="../about.html">About Us</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+        <li><a href="../faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="legal.html">Privacy & Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2026 ContentIntel. All rights reserved. | Powered by ContentIntel AI</p>
+  </div>
+</footer>
+
+</body>
+</html>
