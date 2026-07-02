@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact - ContentIntel</title>
+<meta name="description" content="Contact ContentIntel support. Get help with your account, upgrade questions, feature requests, or bug reports. We respond within 24 hours." />
+<meta name="keywords" content="ContentIntel contact, support, customer service" />
+<meta name="author" content="ContentIntel" />
+<meta name="robots" content="index, follow" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Contact - ContentIntel" />
+<meta property="og:description" content="Get in touch with the ContentIntel team. We're here to help." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://contentintel-xi.vercel.app/contact.html" />
+<meta property="og:image" content="https://contentintel-xi.vercel.app/preview.png" />
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Contact - ContentIntel" />
+<meta name="twitter:description" content="Contact ContentIntel support. Response within 24 hours." />
+
+<!-- Canonical -->
+<link rel="canonical" href="https://contentintel-xi.vercel.app/contact.html" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E523Y1SBNP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E523Y1SBNP');
+</script>
+<title>Contact Us -- ContentIntel</title>
+<meta name="description" content="Get in touch with the ContentIntel team. We are here to help." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0d12; --bg2: #111520; --bg3: #181d2a;
+    --border: rgba(255,255,255,0.07);
+    --accent: #00e5a0; --accent2: #7c5cfc; --accent3: #ff6b6b; --accent4: #ffb830;
+    --text: #e8eaf0; --text2: #8b90a0; --text3: #555a6a;
+    --font-head: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
+    --radius: 12px; --radius-sm: 7px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; font-size: 15px; line-height: 1.7; }
+
+  .page { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 56px; }
+  .logo { font-family: var(--font-head); font-size: 20px; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: var(--text2); text-decoration: none; font-size: 13px; border: 1px solid var(--border); padding: 7px 14px; border-radius: var(--radius-sm); transition: all 0.2s; }
+  .back-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO */
+  .hero { margin-bottom: 48px; }
+  .hero-tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--accent); background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.2); padding: 4px 12px; border-radius: 99px; margin-bottom: 16px; }
+  .hero h1 { font-family: var(--font-head); font-size: 38px; font-weight: 800; line-height: 1.15; margin-bottom: 12px; }
+  .hero-sub { font-size: 15px; color: var(--text2); }
+
+  /* CONTACT GRID */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 48px; }
+
+  /* INFO SIDE */
+  .info-side { display: flex; flex-direction: column; gap: 16px; }
+  .info-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; display: flex; gap: 14px; align-items: flex-start; }
+  .info-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text3); font-weight: 600; margin-bottom: 4px; }
+  .info-value { font-size: 14px; color: var(--text); font-weight: 500; }
+  .info-value a { color: var(--accent); text-decoration: none; }
+  .info-value a:hover { text-decoration: underline; }
+  .info-sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
+
+  /* FORM SIDE */
+  .form-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .form-title { font-family: var(--font-head); font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .field input, .field select, .field textarea {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); color: var(--text);
+    font-family: var(--font-body); font-size: 13px;
+    padding: 10px 13px; outline: none; transition: border 0.2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent2); }
+  .field input::placeholder, .field textarea::placeholder { color: var(--text3); }
+  .field textarea { resize: vertical; min-height: 110px; }
+  .field select { cursor: pointer; }
+  .submit-btn {
+    width: 100%; padding: 12px;
+    background: linear-gradient(135deg, var(--accent2), #5a3fd4);
+    border: none; border-radius: var(--radius-sm);
+    color: #fff; font-family: var(--font-head);
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.2s; margin-top: 4px;
+  }
+  .submit-btn:hover { opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .success-box { background: rgba(0,229,160,0.08); border: 1px solid rgba(0,229,160,0.25); border-radius: var(--radius-sm); padding: 14px; text-align: center; color: var(--accent); font-size: 13px; display: none; margin-top: 12px; }
+
+  /* FAQ */
+  .faq-section { margin-bottom: 48px; }
+  .faq-title { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .faq-title::before { content: ''; width: 3px; height: 20px; background: var(--accent); border-radius: 2px; display: block; }
+  .faq-item { border-bottom: 1px solid var(--border); padding: 14px 0; cursor: pointer; }
+  .faq-q { font-size: 14px; font-weight: 500; color: var(--text); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .faq-q .arrow { color: var(--text3); font-size: 12px; transition: transform 0.2s; flex-shrink: 0; }
+  .faq-a { font-size: 13px; color: var(--text2); line-height: 1.7; margin-top: 8px; display: none; }
+  .faq-item.open .faq-a { display: block; }
+  .faq-item.open .arrow { transform: rotate(180deg); }
+
+  /* FOOTER */
+  .footer { text-align: center; margin-top: 40px; color: var(--text3); font-size: 11px; }
+  .footer a { color: var(--text3); text-decoration: none; transition: color 0.2s; }
+  .footer a:hover { color: var(--accent); }
+
+  @media (max-width: 640px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 26px; }
+    .page { padding: 32px 16px 60px; }
+  }
+
+  /* ── SITE NAV ── */
+  .si-nav { position:sticky;top:0;z-index:200;background:rgba(10,13,18,0.97);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:0 20px; }
+  .si-nav-inner { max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px;gap:12px; }
+  .si-nav-logo { font-family:var(--font-head);font-size:18px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none;flex-shrink:0; }
+  .si-nav-links { display:flex;align-items:center;gap:20px; }
+  .si-nav-links a { color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.15s;white-space:nowrap; }
+  .si-nav-links a:hover, .si-nav-links a.active { color:var(--accent); }
+  .si-nav-cta { display:flex;align-items:center;gap:7px;background:#fff;border:none;border-radius:8px;color:#333;font-family:var(--font-body);font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;flex-shrink:0;text-decoration:none; }
+  .si-nav-cta:hover { opacity:0.85; }
+  .si-nav-hamburger { display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px; }
+  .si-nav-hamburger span { display:block;width:22px;height:2px;background:var(--text2);border-radius:2px; }
+  .si-nav-mobile { display:none;flex-direction:column;border-top:1px solid var(--border);padding:8px 0 14px; }
+  .si-nav-mobile a { color:var(--text2);text-decoration:none;font-size:14px;padding:11px 4px;border-bottom:1px solid var(--border);transition:color 0.15s; }
+  .si-nav-mobile a:hover { color:var(--accent); }
+  .si-nav-mobile .si-nav-cta { margin-top:10px;justify-content:center;width:100%; }
+  @media(max-width:680px){ .si-nav-links{display:none!important;} .si-nav-hamburger{display:flex!important;} }
+  /* HAMBURGER MENU STYLES */
+  .hamburger-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: none;
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    color: #00e5a0;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-left: 10px;
+    gap: 4px;
+  }
+
+  .hamburger-btn:hover {
+    background: rgba(0, 229, 160, 0.1);
+    border-color: rgba(0, 229, 160, 0.6);
+  }
+
+  .hamburger-btn span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: #00e5a0;
+    border-radius: 1px;
+    transition: all 0.3s;
+  }
+
+  .hamburger-menu {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(0, 229, 160, 0.3);
+    border-radius: 8px;
+    min-width: 150px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .hamburger-menu.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hamburger-menu a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(0, 229, 160, 0.1);
+    transition: all 0.2s;
+    font-size: 14px;
+    cursor: pointer;
+    display: block;
+  }
+
+  .hamburger-menu a:last-child {
+    border-bottom: none;
+  }
+
+  .hamburger-menu a:hover {
+    background: rgba(0, 229, 160, 0.1);
+    color: #00e5a0;
+  }
+
+  .account-section-desktop {
+    display: flex;
+    gap: 8px;
+  }
+
+  /* FOOTER STYLES */
+  .app-footer {
+    background: rgba(0, 0, 0, 0.4);
+    border-top: 1px solid rgba(0, 229, 160, 0.2);
+    padding: 40px 20px 20px;
+    margin-top: 60px;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .footer-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+  }
+
+  .footer-section h4 {
+    color: #00e5a0;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .footer-section p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-section ul li {
+    margin-bottom: 8px;
+  }
+
+  .footer-section ul li a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.2s;
+  }
+
+  .footer-section ul li a:hover {
+    color: #00e5a0;
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 229, 160, 0.1);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <nav class="si-nav" id="siNav">
+  <div class="si-nav-inner">
+    <a href="index.html" class="si-nav-logo">⚡ ContentIntel</a>
+    <div class="si-nav-links"><a href="pricing.html" class="">Pricing</a><a href="blog.html" class="">Blog</a><a href="shop.html" class="">Shop</a><a href="faq.html" class="">FAQ</a><a href="about.html" class="">About</a><a href="contact.html" class="active">Contact</a></div>
+    <button class="si-nav-hamburger" onclick="(function(){var m=document.getElementById('siNavMobile');if(m)m.style.display=m.style.display==='flex'?'none':'flex';})()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="si-nav-mobile" id="siNavMobile">
+    <a href="pricing.html">Pricing</a><a href="blog.html">Blog</a><a href="shop.html">Shop</a><a href="faq.html">FAQ</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+  </div>
+</nav>
+
+  <div class="hero">
+    <div class="hero-tag">Contact Us</div>
+    <h1>We are here to help.</h1>
+    <p class="hero-sub">Have a question, feedback or a problem? Reach out and we will get back to you as soon as possible.</p>
+  </div>
+
+  <div class="contact-grid">
+
+    <!-- INFO SIDE -->
+    <div class="info-side">
+      <div class="info-card">
+        <div class="info-icon">📧</div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value">Send us a message using the form</div>
+          <div class="info-sub">We reply within 24 hours</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">⏱</div>
+        <div>
+          <div class="info-label">Response Time</div>
+          <div class="info-value">Within 24 hours</div>
+          <div class="info-sub">Monday to Friday</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">💬</div>
+        <div>
+          <div class="info-label">Support Topics</div>
+          <div class="info-value">Billing, Account, Features</div>
+          <div class="info-sub">We handle all enquiries</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORM SIDE -->
+    <div class="form-box">
+      <div class="form-title">Send us a message</div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="contactName" placeholder="John Doe" />
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="contactEmail" placeholder="you@example.com" />
+      </div>
+      <div class="field">
+        <label>Subject</label>
+        <select id="contactSubject">
+          <option value="">Select a topic...</option>
+          <option value="billing">Billing or Subscription</option>
+          <option value="account">Account Issue</option>
+          <option value="feature">Feature Request</option>
+          <option value="bug">Report a Bug</option>
+          <option value="upgrade">Upgrade Help</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="contactMessage" placeholder="Tell us how we can help..."></textarea>
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="sendMessage()">Send Message →</button>
+      <div class="success-box" id="successBox">
+        ✅ Message sent! We will get back to you within 24 hours.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AD PLACEHOLDER - CONTACT PAGE -->
+  <div style="max-width:800px;margin:40px auto;padding:0 20px;">
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:40px;">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:15px;text-transform:uppercase;letter-spacing:1px;font-weight:600">ADVERTISEMENT</div>
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:250px"
+           data-ad-client="ca-pub-2930782246675591"
+           data-ad-slot="3641588459"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="faq-section">
+    <div class="faq-title">Frequently Asked Questions</div>
+
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">How do I upgrade my plan? <span class="arrow">▼</span></div>
+      <div class="faq-a">Once you are signed in, click the "Upgrade" button in the top right corner of the dashboard. You will be taken to a secure Paystack checkout to complete your subscription.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Can I cancel my subscription anytime? <span class="arrow">▼</span></div>
+      <div class="faq-a">Yes. You can cancel your subscription at any time. Your access will continue until the end of your current billing period.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Why am I seeing limited results on the free tier? <span class="arrow">▼</span></div>
+      <div class="faq-a">The free tier gives you access to Reddit only with up to 3 scans per day and 25 posts per scan. Upgrade to Starter or Pro to unlock more platforms and higher limits.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">What platforms does ContentIntel scan? <span class="arrow">▼</span></div>
+      <div class="faq-a">We scan Reddit, X (Twitter), YouTube, TikTok, Instagram and Facebook. Platform availability depends on your subscription tier.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Is my data safe? <span class="arrow">▼</span></div>
+      <div class="faq-a">Yes. We never sell or share your personal data. Your searches and results are private to your account only.</div>
+    </div>
+  </div>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h4>⚡ ContentIntel</h4>
+      <p>Know what your audience wants before they do.</p>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Product</h4>
+      <ul>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-section">
+      <h4>Legal</h4>
+      <ul>
+        <li><a href="legal.html">Privacy & Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2026 ContentIntel. All rights reserved. | Powered by ContentIntel AI</p>
+  </div>
+</footer>
+
+<script>
+function sendMessage() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const subject = document.getElementById('contactSubject').value;
+  const message = document.getElementById('contactMessage').value.trim();
+
+  if (!name || !email || !subject || !message) {
+    alert('Please fill in all fields before sending.');
+    return;
+  }
+  if (!email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  // Open email client with pre-filled message
+  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+  const subjectLine = encodeURIComponent(`ContentIntel Contact: ${subject}`);
+  window.location.href = `mailto:adewumiperfection@gmail.com?subject=${subjectLine}&body=${body}`;
+
+  setTimeout(() => {
+    document.getElementById('successBox').style.display = 'block';
+    btn.textContent = 'Message Sent!';
+  }, 1000);
+}
+
+function toggleFaq(item) {
+  item.classList.toggle('open');
+}
+
+// Hamburger menu
+const hamburgerMenu = document.getElementById('hamburgerMenu');
+const hamburgerBtn = document.querySelector('.hamburger-btn');
+
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener('click', () => {
+    if (hamburgerMenu) {
+      hamburgerMenu.classList.toggle('active');
+    }
+  });
+}
+
+function closeHamburger() {
+  if (hamburgerMenu) {
+    hamburgerMenu.classList.remove('active');
+  }
+}
+
+// Close hamburger when clicking outside
+document.addEventListener('click', (e) => {
+  if (hamburgerMenu && !e.target.closest('.hamburger-btn') && !e.target.closest('.hamburger-menu')) {
+    closeHamburger();
+  }
+});
+</script>
+</body>
+</html>
