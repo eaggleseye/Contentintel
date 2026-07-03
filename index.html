@@ -3789,6 +3789,8 @@ function copyText(text, el) {
 function ideaButton(topic, context) {
   const tier = window._userTier || 'free';
   const locked = tier !== 'pro';
+  topic = topic || '';
+  context = context || '';
   return `<button class="idea-btn ${locked ? 'locked' : ''}" onclick="generateContentIdeas('${topic.replace(/'/g,"\'")}', '${context.replace(/'/g,"\'")}')">
     ${locked ? '🔒' : '💡'} ${locked ? 'Pro: Content Ideas' : 'Generate Content Ideas'}
   </button>`;
