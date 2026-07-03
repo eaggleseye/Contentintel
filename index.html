@@ -2482,10 +2482,12 @@ function getProAccessRemainingMinutes() {
 window.onUserReady = function(user, tier) {
   document.getElementById('lockScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('app').style.display = 'block';
+  
+  // Ensure tier has a default value
+  if (!tier) tier = window._userTier || 'free';
   
   // Check if user has active Pro access via localStorage
-  if (checkProStatus()) {
+  if (checkProStatus && checkProStatus()) {
     tier = 'pro'; // Override tier to pro if localStorage shows active Pro
   }
   
